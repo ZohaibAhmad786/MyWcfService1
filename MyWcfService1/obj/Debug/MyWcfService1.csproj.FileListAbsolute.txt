@@ -1,0 +1,41 @@
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\ApplicationInsights.config
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\MyWcfService1.dll.config
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\MyWcfService1.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\MyWcfService1.pdb
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Agent.Intercept.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.DependencyCollector.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.PerfCounterCollector.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.DependencyCollector.xml
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.xml
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.xml
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.xml
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.xml
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.dll
+c:\users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.pdb
+C:\Users\ahmad\onedrive\documents\visual studio 2015\Projects\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csprojResolveAssemblyReference.cache
+E:\MyWcfService1\MyWcfService1\bin\ApplicationInsights.config
+E:\MyWcfService1\MyWcfService1\bin\MyWcfService1.dll.config
+E:\MyWcfService1\MyWcfService1\bin\MyWcfService1.dll
+E:\MyWcfService1\MyWcfService1\bin\MyWcfService1.pdb
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Agent.Intercept.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.DependencyCollector.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.PerfCounterCollector.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.dll
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.DependencyCollector.xml
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.xml
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.xml
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.xml
+E:\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.xml
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.dll
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.pdb
+E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.dll
+E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.pdb
+E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.xml
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csprojResolveAssemblyReference.cache
