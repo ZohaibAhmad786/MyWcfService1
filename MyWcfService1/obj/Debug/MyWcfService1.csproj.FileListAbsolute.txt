@@ -28,14 +28,14 @@ E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.dll
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.dll
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.dll
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.dll
+E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.dll
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.DependencyCollector.xml
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.ServerTelemetryChannel.xml
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.Web.xml
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.AI.WindowsServer.xml
 E:\MyWcfService1\MyWcfService1\bin\Microsoft.ApplicationInsights.xml
-E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.dll
-E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.pdb
-E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.dll
 E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.pdb
 E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.xml
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.dll
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.pdb
 E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csprojResolveAssemblyReference.cache

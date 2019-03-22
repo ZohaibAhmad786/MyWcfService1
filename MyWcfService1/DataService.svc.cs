@@ -33,6 +33,25 @@ namespace MyWcfService1
             return st;
         }
 
+        public List<Courses> Courses()
+        {
+            List<Courses> course = new List<Courses>();
+            string q = "select * from Course";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr["CourseCode"].ToString();
+                c.Title = sdr["Title"].ToString();
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return course;
+        }
+
         public int InsertNewRecord(string data)
         {
             var std=JsonConvert.DeserializeObject<StudentData>(data);
@@ -101,6 +120,37 @@ namespace MyWcfService1
             
         }
 
+        public CUD StudentCourses(string Course,string email)
+        {
+            int x = 0;
+            var q = "select * from StudentCourses Where email= '" + email + "' and coursecode ='" + Course + "'";
+            var b = "Insert into StudentCourses values('" + Course + "','" + email + "')";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            SqlCommand cmd2 = new SqlCommand(b, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            System.Diagnostics.Debug.WriteLine(q);
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                return new CUD { rowEffected = x, Reason = "Already Subject exist" };
+            }
+            else
+            {
+                //System.Diagnostics.Debug.WriteLine(q);
+                cmd.Connection.Close();
+                cmd2.Connection.Open();
+                // cmd1.Connection.Open();
+                x = cmd2.ExecuteNonQuery();
+                cmd2.Connection.Close();
+                return new CUD { rowEffected = x, Reason = "Successfully Subject Addeds" };
+            }
+
+            //System.Diagnostics.Debug.WriteLine(x, b);
+            sdr.Close();
+            
+
+        }
+
         public /*List<Student>*/ Student StudentLogin(string email, string pass)
         {
             
@@ -139,6 +189,39 @@ namespace MyWcfService1
             //return st;
         }
 
+        public CUD StudentSchedual(string dataSource1)
+        {
+           // var obj = JsonConvert.DeserializeObject<dynamic>(dataSource1);
+            //var x = dataSource1.Length;
+            return new CUD { Reason = "hellow" };
+        }
+
+        public CUD TutorCourses(string Course,string email)
+        {
+            int x = 0;
+            var b = "Insert into TutorCourses values('" + Course + "','" + email + "')";
+            SqlCommand cmd = new SqlCommand("select * from TutorCourses Where email= '" + email + "' and coursecode ='" + Course + "'", new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                return new CUD { rowEffected = x, Reason = "Already Subject   exist" };
+            }
+            else
+            {
+                SqlCommand cmd1 = new SqlCommand(b, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+                cmd.Connection.Close();
+                cmd1.Connection.Open();
+                x = cmd1.ExecuteNonQuery();
+                cmd1.Connection.Close();
+                return new CUD { rowEffected = x, Reason = "Successfully Subject Addeds" };
+            }
+
+            System.Diagnostics.Debug.WriteLine(x, b);
+            sdr.Close();
+            cmd.Connection.Close();
+        }
+
         public Tutor TutorLogin(string id, string pass)
         {
           
@@ -173,6 +256,9 @@ namespace MyWcfService1
             cmd.Connection.Close();
             //return st;
         }
+
+
+
 
         //public StudentData DoWork()
         //{

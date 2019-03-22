@@ -70,6 +70,45 @@ namespace MyWcfService1
         Tutor TutorLogin(string id, string pass);
 
 
+        [OperationContract]
+        [WebInvoke(
+            Method = "POST",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "/StudentSche"
+            )]
+        CUD StudentSchedual(string dataSource1);
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/GellAllCourses"
+           )]
+        List<Courses> Courses();
+
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/AddStudentCourses/{Course}/{email}"
+           )]
+        CUD StudentCourses(string Course,string email);
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/AddTutorCourses/{Course}/{email}"
+           )]
+        CUD TutorCourses(string Course,string email);
+
+
+
         //StudentData DoWork();
     }
 }
