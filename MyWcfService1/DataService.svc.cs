@@ -33,10 +33,10 @@ namespace MyWcfService1
             return st;
         }
 
-        public List<Courses> Courses()
+        public List<Courses> Courses(string email)
         {
             List<Courses> course = new List<Courses>();
-            string q = "select * from Course";
+            string q = "select  distinct Title,Course.CourseCode from course LEft join studentcourses on studentcourses.coursecode = course.title where StudentCourses.CourseCode is null or StudentCourses.Email!='"+email+"'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -79,15 +79,16 @@ namespace MyWcfService1
             else
             {
                 SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
-
+                cmd.Connection.Close();
+                cmd1.Connection.Open();
                 x = cmd1.ExecuteNonQuery();
-
+                cmd1.Connection.Close();
                 return new CUD { rowEffected = x, Reason = "Successfully Registered" };
             }
 
             System.Diagnostics.Debug.WriteLine(x, query);
             sdr.Close();
-            cmd.Connection.Close();
+          
 
         }
 
@@ -107,15 +108,16 @@ namespace MyWcfService1
             else
             {
                 SqlCommand cmd1 = new SqlCommand(b, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
-                
+                cmd.Connection.Close();
+                cmd1.Connection.Open();
                 x = cmd1.ExecuteNonQuery();
-                
+                cmd1.Connection.Close();
                 return new CUD { rowEffected = x , Reason="Successfully Registered" };
             }
                 
             System.Diagnostics.Debug.WriteLine(x,b);
             sdr.Close();
-            cmd.Connection.Close();
+            //cmd.Connection.Close();
 
             
         }
@@ -151,6 +153,43 @@ namespace MyWcfService1
 
         }
 
+        public List<Courses> StudentEnrollCourses(string email)
+        {
+            List<Courses> course = new List<Courses>();
+            string q = "select * from StudentCourses where Email='" + email+"'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr["CourseCode"].ToString();
+                c.Title = sdr["Email"].ToString();
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return course;
+        }
+        public List<Courses> TutorEnrollCourses(string email)
+        {
+            List<Courses> course = new List<Courses>();
+            string q = "select * from TutorCourses where Email='" + email + "'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr["CourseCode"].ToString();
+                c.Title = sdr["Email"].ToString();
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return course;
+        }
+
         public /*List<Student>*/ Student StudentLogin(string email, string pass)
         {
             
@@ -177,6 +216,7 @@ namespace MyWcfService1
                     password = sdr["password"].ToString(),
                     semester = int.Parse(sdr["Semester_No"].ToString()),
                     phoneNo = sdr["Phone_No"].ToString(),
+                    //imgsrc = sdr["imgsrc"].ToString(),
                     Error="Data Reside In Database"
                 };
             }else
@@ -225,7 +265,7 @@ namespace MyWcfService1
         public Tutor TutorLogin(string id, string pass)
         {
           
-            SqlCommand cmd = new SqlCommand("Select * from Tutor where email='"+id+"' and password='"+pass+"'", new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            SqlCommand cmd = new SqlCommand("Select * from Tutor where email='"+id.Trim()+"' and password='"+pass+"'", new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
             //while (sdr.Read())

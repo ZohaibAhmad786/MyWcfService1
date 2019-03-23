@@ -17,5 +17,6 @@ namespace MyWcfService1
         public int semester { get; set; }
         public string discipline { get; set; }
         public string Error { get; set; }
+        public string imgsrc { get; set; }
     }
 }
