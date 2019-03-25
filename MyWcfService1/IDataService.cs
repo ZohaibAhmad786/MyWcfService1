@@ -128,5 +128,72 @@ namespace MyWcfService1
 
 
         //StudentData DoWork();
+
+
+        //-------------------------------------------
+
+        [OperationContract]
+        [WebInvoke(
+          Method = "GET",
+          RequestFormat = WebMessageFormat.Json,
+          ResponseFormat = WebMessageFormat.Json,
+          UriTemplate = "/Monday/{email}/{sub}"
+          )]
+        List<Days> Monday(string email,string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Tuesday/{email}/{sub}"
+         )]
+        List<Days> Tuesday(string email, string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Wednesday/{email}/{sub}"
+         )]
+        List<Days> Wednesday(string email, string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Thursday/{email}/{sub}"
+         )]
+        List<Days> Thursday(string email, string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Friday/{email}/{sub}"
+         )]
+        List<Days> Friday(string email, string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Saturday/{email}/{sub}"
+         )]
+        List<Days> Saturday(string email, string sub);
+
+        [OperationContract]
+        [WebInvoke(
+         Method = "GET",
+         RequestFormat = WebMessageFormat.Json,
+         ResponseFormat = WebMessageFormat.Json,
+         UriTemplate = "/Sunday/{email}/{sub}"
+         )]
+        List<Days> Sunday(string email, string sub);
+
     }
 }

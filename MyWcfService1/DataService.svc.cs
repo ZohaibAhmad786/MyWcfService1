@@ -297,6 +297,160 @@ namespace MyWcfService1
             //return st;
         }
 
+        public List<Days> Monday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.monday='1' and ts.monday='1' and ts.Email not like '"+email+"'  and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Monday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return days;
+        }
+
+        public List<Days> Tuesday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Tuesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.tuesday='1' and ts.Tuesday='1' and ts.Email not like '"+email+"'  and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Tuesday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
+        public List<Days> Wednesday(string email, string sub)
+        {
+            
+
+ var query = "select distinct ts.Timming,ts.Email,ts.Wednesday,(select[Tutor].First_Name + ' ' +[Tutor].Last_Name  from Tutor where Tutor.Email = ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming = ts.Timming where st.Wednesday = '1' and ts.Wednesday = '1' and ts.Email not like '"+email+"' and t.CourseCode = '"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Wednesday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
+        public List<Days> Thursday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Thursday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.Thursday='1' and ts.Thursday='1' and ts.Email not like '"+email+"' and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Thursday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
+        public List<Days> Friday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Friday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.Friday='1' and ts.Friday='1' and ts.Email not like '"+email+"' and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Friday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
+        public List<Days> Saturday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Saturday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as 'Full Name' from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.Saturday='1' and ts.Saturday='1' and ts.Email not like '"+email+"' and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Saturday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
+        public List<Days> Sunday(string email, string sub)
+        {
+            var query = "select distinct ts.Timming,ts.Email,ts.Sunday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.sunday='1' and ts.Sunday='1' and ts.Email not like '"+email+"'  and t.CourseCode='"+sub+"' order by Timming desc";
+            List<Days> days = new List<Days>();
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Days d = new Days();
+                d.day = "Sunday";
+                d.tutorName = sdr["Full Name"].ToString();
+                d.Timming = sdr["Timming"].ToString();
+                days.Add(d);
+            }
+            sdr.Close();
+            System.Diagnostics.Debug.WriteLine(days);
+            cmd.Connection.Close();
+
+            return days;
+        }
+
 
 
 
