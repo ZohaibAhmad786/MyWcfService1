@@ -229,11 +229,67 @@ namespace MyWcfService1
             //return st;
         }
 
-        public CUD StudentSchedual(string dataSource1)
+        public CUD StudentSchedual(List<Schedual> Sc)
         {
-           // var obj = JsonConvert.DeserializeObject<dynamic>(dataSource1);
-            //var x = dataSource1.Length;
-            return new CUD { Reason = "hellow" };
+            int x = 0;
+            SqlConnection sc = new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123");
+            sc.Open();
+            foreach (var item in Sc)
+            {
+                string Query = "select * from Studentschedual Where email='"+item.AridNo+"' and timming ='"+item.Timming+"'";
+                SqlCommand cmd = new SqlCommand(Query, sc);
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    Query = "update studentschedual set Monday='"+item.M+ "',Tuesday='"+item.T+"',Wednesday='"+item.W+"',Thursday='"+item.Th+"',Friday='"+item.F+"',Saturday='"+item.S+"',sunday='"+item.Su+"' Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
+                    SqlCommand cmd1 = new SqlCommand(Query, sc);
+                    sdr.Close();
+                    x = cmd1.ExecuteNonQuery();
+                }
+                else
+                {
+                    sdr.Close();
+                    Query = "insert into studentschedual values('" + item.AridNo + "','" + item.Timming + "','" + item.M + "','" + item.T + "','" + item.W + "','" + item.Th + "','" + item.F + "','" + item.S + "','" + item.Su + "')";
+                    SqlCommand cmd1 = new SqlCommand(Query, sc);
+                    
+                    x=cmd1.ExecuteNonQuery();
+                }
+                
+            }
+            sc.Close();
+            return new CUD { Reason = "Your Schedual Added",rowEffected=x };
+        }
+
+
+        public CUD TutorSchedual(List<Schedual> Sc)
+        {
+            int x = 0;
+            SqlConnection sc = new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123");
+            sc.Open();
+            foreach (var item in Sc)
+            {
+                string Query = "select * from Studentschedual Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
+                SqlCommand cmd = new SqlCommand(Query, sc);
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    Query = "update studentschedual set Monday='" + item.M + "',Tuesday='" + item.T + "',Wednesday='" + item.W + "',Thursday='" + item.Th + "',Friday='" + item.F + "',Saturday='" + item.S + "',sunday='" + item.Su + "' Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
+                    SqlCommand cmd1 = new SqlCommand(Query, sc);
+                    sdr.Close();
+                    x = cmd1.ExecuteNonQuery();
+                }
+                else
+                {
+                    sdr.Close();
+                    Query = "insert into studentschedual values('" + item.AridNo + "','" + item.Timming + "','" + item.M + "','" + item.T + "','" + item.W + "','" + item.Th + "','" + item.F + "','" + item.S + "','" + item.Su + "')";
+                    SqlCommand cmd1 = new SqlCommand(Query, sc);
+
+                    x = cmd1.ExecuteNonQuery();
+                }
+
+            }
+            sc.Close();
+            return new CUD { Reason = "Your Schedual Added", rowEffected = x };
         }
 
         public CUD TutorCourses(string Course,string email)

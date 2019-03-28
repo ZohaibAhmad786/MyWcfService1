@@ -77,7 +77,16 @@ namespace MyWcfService1
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/StudentSche"
             )]
-        CUD StudentSchedual(string dataSource1);
+        CUD StudentSchedual(List<Schedual> Sc);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "POST",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "/TutorSche"
+            )]
+        CUD TutorSchedual(List<Schedual> Sc);
 
         [OperationContract]
         [WebInvoke(
