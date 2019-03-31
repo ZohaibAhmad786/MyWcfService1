@@ -204,5 +204,36 @@ namespace MyWcfService1
          )]
         List<Days> Sunday(string email, string sub);
 
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/GetAllStudentSchedual/{email}"
+        )]
+        List<Schedual> GetStudentSche(string email);
+
+
+        //GetAllTutorSchedual
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/GetAllTutorSchedual/{email}"
+        )]
+        List<Schedual> GetTutorSche(string email);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/TutorRequest"
+        )]
+        CUD TutorReq(toTutorRequest t);
+
     }
 }

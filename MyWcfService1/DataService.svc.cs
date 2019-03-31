@@ -257,7 +257,7 @@ namespace MyWcfService1
                 
             }
             sc.Close();
-            return new CUD { Reason = "Your Schedual Added",rowEffected=x };
+            return new CUD { Reason = "Schedual Updated Succesfully",rowEffected=x };
         }
 
 
@@ -268,12 +268,12 @@ namespace MyWcfService1
             sc.Open();
             foreach (var item in Sc)
             {
-                string Query = "select * from Studentschedual Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
+                string Query = "select * from tutorschedual Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
                 SqlCommand cmd = new SqlCommand(Query, sc);
                 SqlDataReader sdr = cmd.ExecuteReader();
                 if (sdr.HasRows)
                 {
-                    Query = "update studentschedual set Monday='" + item.M + "',Tuesday='" + item.T + "',Wednesday='" + item.W + "',Thursday='" + item.Th + "',Friday='" + item.F + "',Saturday='" + item.S + "',sunday='" + item.Su + "' Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
+                    Query = "update tutorschedual set Monday='" + item.M + "',Tuesday='" + item.T + "',Wednesday='" + item.W + "',Thursday='" + item.Th + "',Friday='" + item.F + "',Saturday='" + item.S + "',sunday='" + item.Su + "' Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
                     SqlCommand cmd1 = new SqlCommand(Query, sc);
                     sdr.Close();
                     x = cmd1.ExecuteNonQuery();
@@ -281,7 +281,7 @@ namespace MyWcfService1
                 else
                 {
                     sdr.Close();
-                    Query = "insert into studentschedual values('" + item.AridNo + "','" + item.Timming + "','" + item.M + "','" + item.T + "','" + item.W + "','" + item.Th + "','" + item.F + "','" + item.S + "','" + item.Su + "')";
+                    Query = "insert into tutorschedual values('" + item.AridNo + "','" + item.Timming + "','" + item.M + "','" + item.T + "','" + item.W + "','" + item.Th + "','" + item.F + "','" + item.S + "','" + item.Su + "')";
                     SqlCommand cmd1 = new SqlCommand(Query, sc);
 
                     x = cmd1.ExecuteNonQuery();
@@ -289,7 +289,7 @@ namespace MyWcfService1
 
             }
             sc.Close();
-            return new CUD { Reason = "Your Schedual Added", rowEffected = x };
+            return new CUD { Reason = "Schedual Updated Succesfully", rowEffected = x };
         }
 
         public CUD TutorCourses(string Course,string email)
@@ -366,6 +366,7 @@ namespace MyWcfService1
                 d.day = "Monday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -386,6 +387,7 @@ namespace MyWcfService1
                 d.day = "Tuesday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -410,6 +412,7 @@ namespace MyWcfService1
                 d.day = "Wednesday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -432,6 +435,7 @@ namespace MyWcfService1
                 d.day = "Thursday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -454,6 +458,7 @@ namespace MyWcfService1
                 d.day = "Friday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -476,6 +481,7 @@ namespace MyWcfService1
                 d.day = "Saturday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -498,6 +504,7 @@ namespace MyWcfService1
                 d.day = "Sunday";
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
+                d.Email = sdr["Email"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -505,6 +512,73 @@ namespace MyWcfService1
             cmd.Connection.Close();
 
             return days;
+        }
+
+        public List<Schedual> GetStudentSche(string email)
+        {
+            List<Schedual> schedual = new List<Schedual>();
+            SqlCommand cmd = new SqlCommand("select * from studentschedual where email='" + email + "'", new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Schedual sc = new Schedual();
+                sc.AridNo = sdr["email"].ToString();
+                sc.Timming = sdr["Timming"].ToString();
+                sc.M = sdr["Monday"].ToString();
+                sc.T = sdr["Tuesday"].ToString();
+                sc.W = sdr["Wednesday"].ToString();
+                sc.Th = sdr["Thursday"].ToString();
+                sc.F = sdr["Friday"].ToString();
+                sc.S = sdr["Saturday"].ToString();
+                sc.Su = sdr["Sunday"].ToString();
+                schedual.Add(sc);
+            }
+            cmd.Connection.Close();
+            return schedual;
+        }
+
+
+        public List<Schedual> GetTutorSche(string email)
+        {
+            List<Schedual> schedual = new List<Schedual>();
+            SqlCommand cmd = new SqlCommand("select * from tutorschedual where email='" + email + "'", new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Schedual sc = new Schedual();
+                sc.AridNo = sdr["email"].ToString();
+                sc.Timming = sdr["Timming"].ToString();
+                sc.M = sdr["Monday"].ToString();
+                sc.T = sdr["Tuesday"].ToString();
+                sc.W = sdr["Wednesday"].ToString();
+                sc.Th = sdr["Thursday"].ToString();
+                sc.F = sdr["Friday"].ToString();
+                sc.S = sdr["Saturday"].ToString();
+                sc.Su = sdr["Sunday"].ToString();
+                schedual.Add(sc);
+            }
+            cmd.Connection.Close();
+            return schedual;
+        }
+
+        public CUD TutorReq(toTutorRequest t)
+        {
+            int x = 0;
+            string query = "insert into RequestTutor values('"+t.SEmail+"','"+t.TuEmail+"','"+t.Timmings+"','"+t.Subj+"','"+t.Day+"','"+1+"')";
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            x = cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { rowEffected = x, Reason = "Request Submitted" };
+            }
+            else
+            {
+                return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
+            }
         }
 
 
