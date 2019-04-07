@@ -33,10 +33,29 @@ namespace MyWcfService1
             return st;
         }
 
-        public List<Courses> Courses(string email)
+        public List<Courses> SCourses(string email)
         {
             List<Courses> course = new List<Courses>();
             string q = "select  distinct Title,Course.CourseCode from course LEft join studentcourses on studentcourses.coursecode = course.title where StudentCourses.CourseCode is null or StudentCourses.Email!='"+email+"'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr["CourseCode"].ToString();
+                c.Title = sdr["Title"].ToString();
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return course;
+        }
+
+        public List<Courses> TCourses(string email)
+        {
+            List<Courses> course = new List<Courses>();
+            string q = "select  distinct Title,Course.CourseCode from course LEft join TutorCourses on TutorCourses.coursecode = course.title where TutorCourses.CourseCode is null or TutorCourses.Email!='" + email + "'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -356,7 +375,8 @@ namespace MyWcfService1
         public List<Days> Monday(string email, string sub)
         {
             //var query = "select distinct ts.Timming,ts.Email,ts.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=ts.Email ) as [Full Name] from TutorCourses t  join TutorSchedual ts on ts.email = t.email join StudentSchedual st on st.timming =ts.Timming where  st.monday='1' and ts.monday='1' and ts.Email not like '"+email+"'  and t.CourseCode='"+sub+"' order by Timming desc";
-            var query = "select distinct sc.Timming,tc.Email,sc.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='"+email+"' and sc.Monday=tc.Monday  and tc.Monday=1 and cc.CourseCode='"+sub+"'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email+"' and sc.Monday=tc.Monday  and tc.Monday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='"+sub+"'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Monday=tc.Monday  and tc.Monday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -368,6 +388,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -377,7 +398,8 @@ namespace MyWcfService1
 
         public List<Days> Tuesday(string email, string sub)
         {
-            var query = "select distinct sc.Timming,tc.Email,sc.Tuesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='"+email+"' and sc.Tuesday=tc.Tuesday  and tc.Tuesday=1 and cc.CourseCode='"+sub+"'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Tuesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email+"' and sc.Tuesday=tc.Tuesday  and tc.Tuesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='"+sub+"'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Tuesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='"+email+"'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email+"' and sc.Tuesday=tc.Tuesday  and tc.Tuesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='"+sub+"'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -389,6 +411,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -400,9 +423,9 @@ namespace MyWcfService1
 
         public List<Days> Wednesday(string email, string sub)
         {
-            
 
-            var query = "select distinct sc.Timming,tc.Email,sc.Wednesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='"+email+ "' and sc.Wednesday=tc.Wednesday  and tc.Wednesday=1 and cc.CourseCode='" + sub+"'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Wednesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Wednesday=tc.Wednesday  and tc.Wednesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+            // var query = "select distinct sc.Timming,tc.Email,sc.Wednesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email+ "' and sc.Wednesday=tc.Wednesday  and tc.Wednesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub+"'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -414,6 +437,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -425,7 +449,8 @@ namespace MyWcfService1
 
         public List<Days> Thursday(string email, string sub)
         {
-            var query = "select distinct sc.Timming,tc.Email,sc.Thursday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='" + email + "' and sc.Thursday=tc.Thursday  and tc.Thursday=1 and cc.CourseCode='" + sub + "'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Thursday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Thursday=tc.Thursday  and tc.Thursday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Thursday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Thursday=tc.Thursday  and tc.Thursday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -437,6 +462,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -448,7 +474,8 @@ namespace MyWcfService1
 
         public List<Days> Friday(string email, string sub)
         {
-            var query = "select distinct sc.Timming,tc.Email,sc.Friday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='" + email + "' and sc.Friday=tc.Friday  and tc.Friday=1 and cc.CourseCode='" + sub + "'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Friday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Friday=tc.Friday  and tc.Friday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Friday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Friday=tc.Friday  and tc.Friday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -460,6 +487,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -471,7 +499,8 @@ namespace MyWcfService1
 
         public List<Days> Saturday(string email, string sub)
         {
-            var query = "select distinct sc.Timming,tc.Email,sc.Saturday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='" + email + "' and sc.Saturday=tc.Saturday  and tc.Saturday=1 and cc.CourseCode='" + sub + "'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Saturday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Saturday=tc.Saturday  and tc.Saturday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Saturday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Saturday=tc.Saturday  and tc.Saturday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -483,6 +512,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -494,7 +524,8 @@ namespace MyWcfService1
 
         public List<Days> Sunday(string email, string sub)
         {
-            var query = "select distinct sc.Timming,tc.Email,sc.Sunday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email where sc.Email='" + email + "' and sc.Sunday=tc.Sunday  and tc.Sunday=1 and cc.CourseCode='" + sub + "'";
+            //var query = "select distinct sc.Timming,tc.Email,sc.Sunday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Sunday=tc.Sunday  and tc.Sunday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+            var query = "select distinct sc.Timming,tc.Email,sc.Sunday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor where RequestTutor.SEmail='" + email + "'  and  [Status]=1 and RequestTutor.Timming=sc.Timming) as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email + "' and sc.Sunday=tc.Sunday  and tc.Sunday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
             List<Days> days = new List<Days>();
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
@@ -506,6 +537,7 @@ namespace MyWcfService1
                 d.tutorName = sdr["Full Name"].ToString();
                 d.Timming = sdr["Timming"].ToString();
                 d.Email = sdr["Email"].ToString();
+                d.tutorStatus = sdr["tutorStatus"].ToString();
                 days.Add(d);
             }
             sdr.Close();
@@ -567,19 +599,57 @@ namespace MyWcfService1
         public CUD TutorReq(toTutorRequest t)
         {
             int x = 0;
-            string query = "insert into RequestTutor values('"+t.SEmail+"','"+t.TuEmail+"','"+t.Timmings+"','"+t.Subj+"','"+t.Day+"','"+1+"')";
-            SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            string q = "select * from RequestTutor where Timming ='"+t.Timmings+"'";
+            SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd1.Connection.Open();
+            SqlDataReader sdr = cmd1.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                cmd1.Connection.Close();
+                return new CUD { rowEffected = x, Reason = "Can not Send Request at Same Time" };
+            }else
+            {
+                cmd1.Connection.Close();
+                string query = "insert into RequestTutor values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Subj + "','" + t.Day + "','" + 1 + "')";
+                SqlCommand cmd = new SqlCommand(query, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+                cmd.Connection.Open();
+
+                x = cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+                if (x == 1)
+                {
+                    return new CUD { rowEffected = x, Reason = "Request Submitted" };
+                }
+                else
+                {
+                    return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
+                }
+            }
+            
+            
+            
+        }
+
+        public List<StudentRequest> RequestAcceptOrReject(string sub,string email)
+        {
+            List<StudentRequest> lstSr = new List<StudentRequest>();
+            string q = "select * from RequestTutor where subject='"+sub+"' and temail='"+email+"'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
-            x = cmd.ExecuteNonQuery();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                StudentRequest sr = new StudentRequest();
+                sr.SEmail = sdr["sEmail"].ToString();
+                sr.TEmail = sdr["Temail"].ToString();
+                sr.Timming = sdr["Timming"].ToString();
+                sr.Day = sdr["Day"].ToString();
+                sr.Subject = sdr["Subject"].ToString();
+                lstSr.Add(sr);
+            }
+            sdr.Close();
             cmd.Connection.Close();
-            if (x == 1)
-            {
-                return new CUD { rowEffected = x, Reason = "Request Submitted" };
-            }
-            else
-            {
-                return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
-            }
+            return lstSr;
         }
 
 

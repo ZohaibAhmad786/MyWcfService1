@@ -93,9 +93,18 @@ namespace MyWcfService1
            Method = "GET",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Json,
-           UriTemplate = "/GellAllCourses/{email}"
+           UriTemplate = "/SGellAllCourses/{email}"
            )]
-        List<Courses> Courses(string email);
+        List<Courses> SCourses(string email);
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/TGellAllCourses/{email}"
+           )]
+        List<Courses> TCourses(string email);
 
 
         [OperationContract]
@@ -234,6 +243,15 @@ namespace MyWcfService1
         UriTemplate = "/TutorRequest"
         )]
         CUD TutorReq(toTutorRequest t);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/RequestManaging/{sub}/{email}"
+        )]
+        List<StudentRequest> RequestAcceptOrReject(string sub,string email);
 
     }
 }
