@@ -33,12 +33,12 @@ namespace MyWcfService1
 
         [OperationContract]
         [WebInvoke(
-            Method = "GET",
+            Method = "POST",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/InserStudent/{email}/{firstname}/{lastname}/{phoneNo}/{discipline}/{semester}/{password}/{address}/{gender}"
+            UriTemplate = "/InserStudent"///{email}/{firstname}/{lastname}/{phoneNo}/{discipline}/{semester}/{password}/{address}/{gender}"
             )]
-        /*int*/CUD InsertStudentData(string email, string firstname, string lastname, string phoneNo, string discipline, string semester, string password, string address, string gender);
+        /*int*/CUD InsertStudentData(Student s);//string email, string firstname, string lastname, string phoneNo, string discipline, string semester, string password, string address, string gender
 
         [OperationContract]
         [WebInvoke(
@@ -252,6 +252,37 @@ namespace MyWcfService1
         UriTemplate = "/RequestManaging/{sub}/{email}"
         )]
         List<StudentRequest> RequestAcceptOrReject(string sub,string email);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/DeleteStudentCourse/{email}/{sub}"
+        )]
+        CUD StdDelCourse(string email,string sub);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/DeleteTutorCourse/{email}/{sub}"
+        )]
+        CUD TutorDelCourse(string email, string sub);
+
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/AcceptRequest/{email}/{sub}"
+        )]
+        List<toTutorRequest> TutorAcceptRequest(string email, string sub);
 
     }
 }

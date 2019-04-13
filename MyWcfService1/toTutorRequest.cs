@@ -7,6 +7,9 @@
         public string Timmings { get; set; }
         public string Subj { get; set; }
         public string Day { get; set; }
+        public string Name { get; set; }
+
+        public string Reason { get; set; }
 
     }
 }
