@@ -284,5 +284,15 @@ namespace MyWcfService1
         )]
         List<toTutorRequest> TutorAcceptRequest(string email, string sub);
 
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/AcceptedRequest"
+        )]
+        CUD TutorAcceptedRequest(toTutorRequest t);
+
+
     }
 }
