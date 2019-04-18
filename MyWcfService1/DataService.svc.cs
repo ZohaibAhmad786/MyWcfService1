@@ -628,7 +628,7 @@ namespace MyWcfService1
         public CUD TutorReq(toTutorRequest t)
         {
             int x = 0;
-            string q = "select * from RequestTutor where Timming ='" + t.Timmings + "'";
+            string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Temail='"+t.TuEmail+"'";
             SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd1.Connection.Open();
             SqlDataReader sdr = cmd1.ExecuteReader();
@@ -772,13 +772,100 @@ namespace MyWcfService1
             }
         }
 
+        public List<HeldClassess> TodayStudentClasses(string Email, string day, string datetimetoday)
+        {
+            string q = "select (select Email from Student where Email=rt.SEmail) as StuEmail,(select btnStatus from HeldStuClass hs where hs.Semail=rt.SEmail and hs.Temail=rt.TEmail and hs.DayTimeMonth='"+datetimetoday+ "' and hs.Timmings=rt.Timming and hs.[Day]=rt.[Day] and hs.[Subject]=rt.[Subject]) as bitStatus,(select First_Name+' '+Last_Name from Student where Email=rt.SEmail) as [fullname],[Day],[Subject],[Timming] from requesttutor rt where rt.TEmail='" + Email+"' and rt.[Day]='"+day+ "' and rt.[Status]=2";
+            List<HeldClassess> Hldcls = new List<HeldClassess>();
+           // string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.SEmail) as [fullname],SEmail,Timming,[Day],[Subject] from RequestTutor where TEmail='" + email + "' and subject='" + sub + "' and Status=1";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                while (sdr.Read())
+                {
+                    
+                        HeldClassess t = new HeldClassess();
+                        t.SEmail = sdr["StuEmail"].ToString();
+                        t.Subj = sdr["subject"].ToString();
+                        t.Timmings = sdr["timming"].ToString();
+                        t.Day = sdr["Day"].ToString();
+                        t.Name = sdr["fullname"].ToString();
+                        t.status = sdr["bitStatus"].ToString();
+                        Hldcls.Add(t);
+                    
+                }
 
+                sdr.Close();
+                return Hldcls;
+            }
+            else
+            {
+                HeldClassess t = new HeldClassess();
+                t.Reason = "No Classes Today";
+                sdr.Close();
+                return Hldcls;
+            }
+            cmd.Connection.Close();
+        }
 
+        public CUD TutorHeldStudentClassses(HeldClassess t)
+        {
+            int x = 0;
+            string Held = "Held";
+            string q = "insert into HeldStuClass values('"+t.SEmail+ "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','"+Held.ToString()+"','"+t.DateTimeToday+"','"+1+"')";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            x = cmd.ExecuteNonQuery();
 
-        //public StudentData DoWork()
-        //{
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { Reason = "Held Class" ,rowEffected=x};
+            }
+            else
+            {
+                return new CUD { Reason = "Faild to Held Class", rowEffected = x };
+            }
+        }
+        public CUD TutorCancelStudentClassses(HeldClassess t)
+        {
+            int x = 0;
+            string Held = "Cancel";
+            string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            x = cmd.ExecuteNonQuery();
 
-        //    return new StudentData { Email = "Ahmadzohaib369@gmail.com", Last_Name = "Faraz", First_Name = "Ali", id = 1  };
-        //}
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { Reason = "Cancel Class" ,rowEffected=x};
+            }
+            else
+            {
+                return new CUD { Reason = "Faild to cancel Class" ,rowEffected=x};
+            }
+        }
+
+        public CUD TutorRejectedRequest(toTutorRequest t)
+        {
+            int x = 0;
+            string val = null;
+            string q = "delete from requestTutor  where Temail='" + t.TuEmail + "' and semail='" + t.SEmail + "' and Day='" + t.Day + "' and timming='" + t.Timmings + "' and subject='" + t.Subj + "'  ";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd.Connection.Open();
+            x = cmd.ExecuteNonQuery();
+
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { Reason = t.SEmail + " Request Reject" };
+            }
+            else
+            {
+                return new CUD { Reason = t.SEmail + " Failed to Accept" };
+            }
+        }
     }
 }

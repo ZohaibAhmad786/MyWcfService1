@@ -293,6 +293,48 @@ namespace MyWcfService1
         )]
         CUD TutorAcceptedRequest(toTutorRequest t);
 
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/RejectedRequest"
+        )]
+        CUD TutorRejectedRequest(toTutorRequest t);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/TodayClasses/{Email}/{day}/{datetimetoday}"
+        )]
+        List<HeldClassess> TodayStudentClasses(string Email,string day,string datetimetoday);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/HeldStudentClass"
+        )]
+        CUD TutorHeldStudentClassses(HeldClassess t);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/CancelStudentClass"
+        )]
+        CUD TutorCancelStudentClassses(HeldClassess t);
+
+
+        //HeldStudentClass
+
 
     }
 }
+
+//select (select Email from Student where Email=rt.SEmail) as StuEmail,(select First_Name+' '+Last_Name from Student where Email=rt.SEmail) as [fullname],[Day],[Subject],[Timming] from requesttutor rt where rt.TEmail='awaisali@gmail.com' and rt.[Day]='thursday'
