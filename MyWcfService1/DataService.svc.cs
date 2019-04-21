@@ -628,7 +628,7 @@ namespace MyWcfService1
         public CUD TutorReq(toTutorRequest t)
         {
             int x = 0;
-            string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Temail='"+t.TuEmail+"'";
+            string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Temail='"+t.TuEmail+"' and Day='"+t.Day+"'";// only day has added if error Remove day only from This function..
             SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd1.Connection.Open();
             SqlDataReader sdr = cmd1.ExecuteReader();
