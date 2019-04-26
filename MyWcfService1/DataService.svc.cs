@@ -35,9 +35,25 @@ namespace MyWcfService1
 
         public List<Courses> SCourses(string email)
         {
-            List<Courses> course = new List<Courses>();
-            string q = "select  distinct Title,Course.CourseCode from course LEft join studentcourses on studentcourses.coursecode = course.title where StudentCourses.CourseCode is null or StudentCourses.Email!='" + email + "'";
-            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            List<Courses> allcourse = new List<Courses>();
+            List<Courses> senrollcourse = new List<Courses>();
+            //string q = "select  distinct Title,Course.CourseCode from course LEft join studentcourses on studentcourses.coursecode = course.title where StudentCourses.CourseCode is null or StudentCourses.Email!='" + email + "'";
+            //SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            //cmd.Connection.Open();
+            //SqlDataReader sdr = cmd.ExecuteReader();
+            //while (sdr.Read())
+            //{
+            //    Courses c = new Courses();
+            //    c.CourseCode = sdr["CourseCode"].ToString();
+            //    c.Title = sdr["Title"].ToString();
+            //    course.Add(c);
+            //}
+            //sdr.Close();
+            //cmd.Connection.Close();
+            //return course;
+            string query1 = "select * from course";
+            string query2 = "select * from studentcourses where email='" + email + "'";
+            SqlCommand cmd = new SqlCommand(query1, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
@@ -45,18 +61,62 @@ namespace MyWcfService1
                 Courses c = new Courses();
                 c.CourseCode = sdr["CourseCode"].ToString();
                 c.Title = sdr["Title"].ToString();
-                course.Add(c);
+                allcourse.Add(c);
             }
             sdr.Close();
             cmd.Connection.Close();
-            return course;
+
+            SqlCommand cmd1 = new SqlCommand(query2, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd1.Connection.Open();
+            SqlDataReader sdr1 = cmd1.ExecuteReader();
+            while (sdr1.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr1["CourseCode"].ToString();
+                //c.Title = sdr1["Title"].ToString();
+                senrollcourse.Add(c);
+            }
+            sdr1.Close();
+            cmd1.Connection.Close();
+
+            foreach (var item in allcourse.ToList())
+            {
+                foreach (var item1 in senrollcourse.ToList())
+                {
+                    if (item.Title == item1.CourseCode)
+                    {
+                        allcourse.Remove(item);
+                    }
+                }
+            }
+
+
+
+            return allcourse;
         }
 
         public List<Courses> TCourses(string email)
         {
-            List<Courses> course = new List<Courses>();
-            string q = "select  distinct Title,Course.CourseCode from course LEft join TutorCourses on TutorCourses.coursecode = course.title where TutorCourses.CourseCode is null or TutorCourses.Email!='" + email + "'";
-            SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            //List<Courses> course = new List<Courses>();
+            //string q = "select  distinct Title,Course.CourseCode from course LEft join TutorCourses on TutorCourses.coursecode = course.title where TutorCourses.CourseCode is null or TutorCourses.Email!='" + email + "'";
+            //SqlCommand cmd = new SqlCommand(q, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            //cmd.Connection.Open();
+            //SqlDataReader sdr = cmd.ExecuteReader();
+            //while (sdr.Read())
+            //{
+            //    Courses c = new Courses();
+            //    c.CourseCode = sdr["CourseCode"].ToString();
+            //    c.Title = sdr["Title"].ToString();
+            //    course.Add(c);
+            //}
+            //sdr.Close();
+            //cmd.Connection.Close();
+            //return course;
+            List<Courses> allcourse = new List<Courses>();
+            List<Courses> senrollcourse = new List<Courses>();
+            string query1 = "select * from course";
+            string query2 = "select * from TutorCourses where email='" + email + "'";
+            SqlCommand cmd = new SqlCommand(query1, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
             while (sdr.Read())
@@ -64,11 +124,38 @@ namespace MyWcfService1
                 Courses c = new Courses();
                 c.CourseCode = sdr["CourseCode"].ToString();
                 c.Title = sdr["Title"].ToString();
-                course.Add(c);
+                allcourse.Add(c);
             }
             sdr.Close();
             cmd.Connection.Close();
-            return course;
+
+            SqlCommand cmd1 = new SqlCommand(query2, new SqlConnection(@"Data Source=DESKTOP-ILO8D81\SQLEXPRESS;Initial Catalog=FYPDatabase;Persist Security Info=True;User ID=sa;Password=123"));
+            cmd1.Connection.Open();
+            SqlDataReader sdr1 = cmd1.ExecuteReader();
+            while (sdr1.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr1["CourseCode"].ToString();
+                //c.Title = sdr1["Title"].ToString();
+                senrollcourse.Add(c);
+            }
+            sdr1.Close();
+            cmd1.Connection.Close();
+
+            foreach (var item in allcourse.ToList())
+            {
+                foreach (var item1 in senrollcourse.ToList())
+                {
+                    if (item.Title == item1.CourseCode)
+                    {
+                        allcourse.Remove(item);
+                    }
+                }
+            }
+
+
+
+            return allcourse;
         }
 
         public int InsertNewRecord(string data)
