@@ -42,12 +42,12 @@ namespace MyWcfService1
 
         [OperationContract]
         [WebInvoke(
-            Method = "GET",
+            Method = "POST",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/InserTutor/{email}/{firstname}/{lastname}/{phoneNo}/{address}/{password}/{gender}"
+            UriTemplate = "/InserTutor"///{email}/{firstname}/{lastname}/{phoneNo}/{address}/{password}/{gender}"
             )]
-        CUD InsertTutortData(string email, string firstname, string lastname, string phoneNo, string address, string password, string gender);
+        CUD InsertTutortData(Tutor t);
 
 
         [OperationContract]
@@ -121,9 +121,9 @@ namespace MyWcfService1
            Method = "GET",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Json,
-           UriTemplate = "/AddTutorCourses/{Course}/{email}"
+           UriTemplate = "/AddTutorCourses/{Course}/{email}/{fees}"
            )]
-        CUD TutorCourses(string Course,string email);
+        CUD TutorCourses(string Course,string email,string fees);
 
 
         [OperationContract]
@@ -280,9 +280,9 @@ namespace MyWcfService1
         Method = "GET",
         RequestFormat = WebMessageFormat.Json,
         ResponseFormat = WebMessageFormat.Json,
-        UriTemplate = "/AcceptRequest/{email}/{sub}"
+        UriTemplate = "/AcceptRequest/{email}"
         )]
-        List<toTutorRequest> TutorAcceptRequest(string email, string sub);
+        List<toTutorRequest> TutorAcceptRequest(string email);
 
         [OperationContract]
         [WebInvoke(
@@ -330,6 +330,53 @@ namespace MyWcfService1
         )]
         CUD TutorCancelStudentClassses(HeldClassess t);
 
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/Login/{Email}/{Pass}"
+        )]
+        Student Login(string Email,string Pass);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/Held/{Email}"
+        )]
+        List<HeldClassess> HeldClass(string Email);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/SubjectTimeTable/{Email}"
+        )]
+        List<toTutorRequest> StudentTimeTable(string Email);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/IsSClassExist"
+        )]
+        CUD isStudentClassStudy(StudentRequest s);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "POST",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/IsTClassExist"
+        )]
+        CUD isTutorClassStudy(StudentRequest s);
 
         //HeldStudentClass
 

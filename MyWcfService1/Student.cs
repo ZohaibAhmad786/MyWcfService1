@@ -18,5 +18,7 @@ namespace MyWcfService1
         public string discipline { get; set; }
         public string Error { get; set; }
         public string imgsrc { get; set; }
+        public string CNIC { get; set; }
+        public string Type { get; set; }
     }
 }

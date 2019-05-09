@@ -16,5 +16,7 @@ namespace MyWcfService1
         public char gender { get; set; }
         public string Error { get; set; }
         public string imgsrc { get; set; }
+      
+        public string Type { get; set; }
     }
 }
