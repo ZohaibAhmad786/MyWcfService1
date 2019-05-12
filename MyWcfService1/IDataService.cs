@@ -378,6 +378,25 @@ namespace MyWcfService1
         )]
         CUD isTutorClassStudy(StudentRequest s);
 
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/TutorFinance/{email}"
+        )]
+        List<FinanceData> TutorFinance(string email);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/ViewDetailsTutorFinance/{temail}/{semail}/{fname}/{lname}/{type}"
+        )]
+        List<FinanceData> ViewDeatilsTutorFinance(string temail,string semail, string fname, string lname,string type);
+
         //HeldStudentClass
 
 

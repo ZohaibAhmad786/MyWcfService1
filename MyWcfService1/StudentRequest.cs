@@ -7,5 +7,6 @@
         public string Timming { get; set; }
         public string Subject { get; set; }
         public string Day { get; set; }
+        public string Name { get; set; }
     }
 }

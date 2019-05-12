@@ -105,6 +105,7 @@
       <DependentUpon>DataService.svc</DependentUpon>
     </Compile>
     <Compile Include="Days.cs" />
+    <Compile Include="FinanceData.cs" />
     <Compile Include="HeldClassess.cs" />
     <Compile Include="IDataService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

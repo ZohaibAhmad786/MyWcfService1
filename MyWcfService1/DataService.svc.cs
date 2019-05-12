@@ -1230,7 +1230,7 @@ namespace MyWcfService1
         public List<toTutorRequest> TutorAcceptRequest(string email)
         {
             List<toTutorRequest> tutorReq = new List<toTutorRequest>();
-            string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.SEmail) as [fullname],SEmail,Timming,[Day],[Subject] from RequestTutor where TEmail='" + email + "' and Status=1";
+            string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.Semail) as [fullname],Temail, (select Tutor.First_Name+' '+Tutor.Last_Name  from Tutor where Email=RequestTutor.TEmail) as [fullname1],SEmail,Timming,[Day],[Subject] from RequestTutor where TEmail='" + email + "' or Semail='" + email + "' and Status=1";
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -1239,11 +1239,24 @@ namespace MyWcfService1
                 while (sdr.Read())
                 {
                     toTutorRequest t = new toTutorRequest();
-                    t.SEmail = sdr["Semail"].ToString();
-                    t.Subj = sdr["subject"].ToString();
-                    t.Timmings = sdr["timming"].ToString();
-                    t.Day = sdr["Day"].ToString();
-                    t.Name = sdr["fullname"].ToString();
+                    if (email == sdr["Semail"].ToString())
+                    {
+                        t.SEmail = sdr["Semail"].ToString();
+                        t.Subj = sdr["subject"].ToString();
+                        t.Timmings = sdr["timming"].ToString();
+                        t.Day = sdr["Day"].ToString();
+                        t.Name = sdr["fullname1"].ToString();
+                        t.TuEmail = sdr["temail"].ToString();
+                    }
+                    else
+                    {
+                        t.SEmail = sdr["Semail"].ToString();
+                        t.Subj = sdr["subject"].ToString();
+                        t.Timmings = sdr["timming"].ToString();
+                        t.Day = sdr["Day"].ToString();
+                        t.Name = sdr["fullname"].ToString();
+                        t.TuEmail = sdr["temail"].ToString();
+                    }
                     tutorReq.Add(t);
                 }
 
@@ -1511,7 +1524,7 @@ namespace MyWcfService1
         }
         public CUD isTutorClassStudy(StudentRequest s)
         {
-            var query = "select * from RequestTutor where Timming = '" + s.Timming + "' and Day = '" + s.Day + "' and Temail = '" + s.TEmail + "'";
+            var query = "select * from RequestTutor where Timming = '" + s.Timming + "' and Day = '" + s.Day + "' and Temail = '" + s.SEmail + "'";
             SqlCommand cmd3 = new SqlCommand(query, new SqlConnection(connectionString));
             cmd3.Connection.Open();
             SqlDataReader sdr2 = cmd3.ExecuteReader();
@@ -1526,6 +1539,167 @@ namespace MyWcfService1
                 cmd3.Connection.Close();
                 sdr2.Close();
                 return new CUD { Reason = "No" };
+            }
+        }
+
+        public List<FinanceData> TutorFinance(string email)
+        {
+
+            List<FinanceData> fd = new List<FinanceData>();
+            SqlCommand cmd = new SqlCommand("select semail,Temail,(select First_Name+' '+Last_Name from Student where Email=SEmail) as Name,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as Name1,Subject,COUNT(*)*(select fees from Admin where TutorEmail=HeldStuClass.TEmail and CourseTitle=HeldStuClass.Subject) as fee  from HeldStuClass   where  TEmail='" + email + "' or semail='" + email + "' group by Subject,SEmail,TEmail", new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                FinanceData f = new FinanceData();
+
+                if (sdr["semail"].ToString() == email)
+                {
+                    f.Semail = sdr["temail"].ToString();
+                    f.Amount = int.Parse(sdr["Fee"].ToString());
+                    f.CTile = sdr["Subject"].ToString();
+                    f.Name = sdr["name1"].ToString();
+                    if (fd.Count > 0)
+                    {
+                        foreach (var item in fd.ToList())
+                        {
+                            if (item.Semail == f.Semail && item.CTile != f.CTile)
+                            {
+                                item.Amount += f.Amount;
+                                //item.CTile = "";
+
+                            }
+                            else
+                            {
+
+                                if (fd.Contains(f))
+                                {
+
+                                }
+                                else
+                                {
+                                    var data = fd.Where(d => d.Semail == f.Semail).ToList();
+                                    if (data.Count == 0)
+                                    {
+
+                                        fd.Add(f);
+                                    }
+                                }
+
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+                        fd.Add(f);
+                    }
+                }
+                else
+                {
+                    f.Semail = sdr["semail"].ToString();
+                    f.Amount = int.Parse(sdr["Fee"].ToString());
+                    f.CTile = sdr["Subject"].ToString();
+                    f.Name = sdr["name"].ToString();
+                    if (fd.Count > 0)
+                    {
+                        foreach (var item in fd.ToList())
+                        {
+                            if (item.Semail == f.Semail && item.CTile != f.CTile)
+                            {
+                                item.Amount += f.Amount;
+                                item.CTile = "";
+                            }
+                            else
+                            {
+                                if (fd.Contains(f))
+                                {
+
+                                }
+                                else
+                                {
+                                    var data = fd.Where(d => d.Semail == f.Semail).ToList();
+                                    if (data.Count == 0)
+                                    {
+
+                                        fd.Add(f);
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+                        fd.Add(f);
+                    }
+                }
+
+            }
+            cmd.Connection.Close();
+
+
+            return fd;
+        }
+
+        public List<FinanceData> ViewDeatilsTutorFinance(string temail, string semail,string fname,string lname,string type)
+        {
+            if (type == "Student")
+            {
+                string name = fname + " " + lname;
+                List<FinanceData> fd = new List<FinanceData>();
+                SqlCommand cmd = new SqlCommand("select distinct Subject,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + temail + "' and Semail='" + semail + "'", new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    FinanceData s = new FinanceData();
+                    s.CTile = sdr["Subject"].ToString();
+
+                    if (name != sdr["name"].ToString())
+                    {
+                        s.Name = sdr["name"].ToString();
+                        fd.Add(s);
+                    }
+                    else
+                    {
+                        s.Name = sdr["name1"].ToString();
+                        fd.Add(s);
+                    }
+
+                }
+                cmd.Connection.Close();
+
+                return fd;
+            }else
+            {
+                string name = fname + " " + lname;
+                List<FinanceData> fd = new List<FinanceData>();
+                SqlCommand cmd = new SqlCommand("select distinct Subject,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + semail + "' and Semail='" + temail + "'", new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                while (sdr.Read())
+                {
+                    FinanceData s = new FinanceData();
+                    s.CTile = sdr["Subject"].ToString();
+
+                    if (name != sdr["name"].ToString())
+                    {
+                        s.Name = sdr["name"].ToString();
+                        fd.Add(s);
+                    }
+                    else
+                    {
+                        s.Name = sdr["name1"].ToString();
+                        fd.Add(s);
+                    }
+
+                }
+                cmd.Connection.Close();
+
+                return fd;
             }
         }
     }
