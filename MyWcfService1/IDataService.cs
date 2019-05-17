@@ -49,6 +49,15 @@ namespace MyWcfService1
             )]
         CUD InsertTutortData(Tutor t);
 
+        [OperationContract]
+        [WebInvoke(
+            Method = "POST",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "/InserParent"///{email}/{firstname}/{lastname}/{phoneNo}/{address}/{password}/{gender}"
+            )]
+        CUD InsertParentData(Parent p);
+
 
         [OperationContract]
         [WebInvoke(
@@ -396,6 +405,16 @@ namespace MyWcfService1
         UriTemplate = "/ViewDetailsTutorFinance/{temail}/{semail}/{fname}/{lname}/{type}"
         )]
         List<FinanceData> ViewDeatilsTutorFinance(string temail,string semail, string fname, string lname,string type);
+
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/GetChildrenRec/{cnic}"
+        )]
+        List<Student> GetChildrenRec(string cnic);
 
         //HeldStudentClass
 

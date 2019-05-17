@@ -184,7 +184,7 @@ namespace MyWcfService1
             {
                 cmd.Connection.Close();
                 sdr.Close();
-                return new CUD { rowEffected = x, Reason = "Email Already data exist" };
+                return new CUD { rowEffected = x, Reason = "Email Already Taken" };
             }
             else
             {
@@ -197,18 +197,30 @@ namespace MyWcfService1
                 {
                     cmd1.Connection.Close();
                     sdr1.Close();
-                    return new CUD { rowEffected = x, Reason = " Email Already data exist" };
+                    return new CUD { rowEffected = x, Reason = " Email Already Taken" };
                 }
                 else
                 {
                     cmd1.Connection.Close();
                     sdr1.Close();
-                    SqlCommand cmd2 = new SqlCommand(query, new SqlConnection(connectionString));
+                    SqlCommand cmd3 = new SqlCommand("select * from PArent where email='" + s.email + "'", new SqlConnection(connectionString));
+                    cmd3.Connection.Open();
+                    SqlDataReader sdr4 = cmd3.ExecuteReader();
+                    if (sdr4.HasRows)
+                    {
+                        cmd3.Connection.Close();
+                        sdr4.Close();
+                        return new CUD { rowEffected = x, Reason = "Email Already Taken" };
+                    }
+                    else
+                    {
+                        SqlCommand cmd2 = new SqlCommand(query, new SqlConnection(connectionString));
 
-                    cmd2.Connection.Open();
-                    x = cmd2.ExecuteNonQuery();
-                    cmd2.Connection.Close();
-                    return new CUD { rowEffected = x, Reason = "Successfully Registered" };
+                        cmd2.Connection.Open();
+                        x = cmd2.ExecuteNonQuery();
+                        cmd2.Connection.Close();
+                        return new CUD { rowEffected = x, Reason = "Successfully Registered" };
+                    }
                 }
             }
 
@@ -224,15 +236,15 @@ namespace MyWcfService1
             //var td = JsonConvert.DeserializeObject<Tutor>(data);
             //
             int x = 0;
-            var b = "Insert into Tutor values('" + t.email + "','" + t.firstname + "','" + t.lastname + "','" + t.phoneNo + "','" + t.address + "','" + t.password + "','" + Convert.ToChar(t.gender) + "','" + t.imgsrc + "','" + t.Type + "')";
-            SqlCommand cmd = new SqlCommand("select * from Tutor Where email= '" + t.email + "'", new SqlConnection(connectionString));
+            var b = "Insert into Tutor values('" + t.email + "','" + t.firstname + "','" + t.lastname + "','" + t.phoneNo + "','" + t.address + "','" + t.password + "','" + Convert.ToChar(t.gender) + "','" + t.imgsrc + "','" + t.Type + "','" + t.CNIC + "')";
+            SqlCommand cmd = new SqlCommand("select * from Tutor Where email= '" + t.email + "' or CNIC='" + t.CNIC + "'", new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
             if (sdr.HasRows)
             {
                 cmd.Connection.Close();
                 sdr.Close();
-                return new CUD { rowEffected = x, Reason = "Email Already data exist" };
+                return new CUD { rowEffected = x, Reason = "Email or CNIC Already Taken" };
             }
             else
             {
@@ -245,25 +257,90 @@ namespace MyWcfService1
                 {
                     cmd2.Connection.Close();
                     sdr1.Close();
-                    return new CUD { rowEffected = x, Reason = "Email Already data exist" };
+                    return new CUD { rowEffected = x, Reason = "Email  Already Taken" };
                 }
                 else
                 {
                     cmd2.Connection.Close();
                     sdr1.Close();
-                    SqlCommand cmd1 = new SqlCommand(b, new SqlConnection(connectionString));
-                    cmd1.Connection.Open();
-                    x = cmd1.ExecuteNonQuery();
-                    cmd1.Connection.Close();
-                    return new CUD { rowEffected = x, Reason = "Successfully Registered" };
+                    SqlCommand cmd3 = new SqlCommand("select * from PArent where email='" + t.email + "' or cnic='" + t.CNIC + "'", new SqlConnection(connectionString));
+                    cmd3.Connection.Open();
+                    SqlDataReader sdr4 = cmd3.ExecuteReader();
+                    if (sdr4.HasRows)
+                    {
+                        cmd3.Connection.Close();
+                        sdr4.Close();
+                        return new CUD { rowEffected = x, Reason = "Email or CNIC Already Taken" };
+                    }
+                    else
+                    {
+                        SqlCommand cmd1 = new SqlCommand(b, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        x = cmd1.ExecuteNonQuery();
+                        cmd1.Connection.Close();
+                        return new CUD { rowEffected = x, Reason = "Successfully Registered" };
+                    }
                 }
             }
 
             System.Diagnostics.Debug.WriteLine(x, b);
-            //sdr.Close();
-            //cmd.Connection.Close();
+        }
 
+        public /*int*/ CUD InsertParentData(Parent p)
+        {
+            //var td = JsonConvert.DeserializeObject<Tutor>(data);
+            //
+            int x = 0;
+            var b = "Insert into Parent values('" + p.email + "','" + p.firstname + "','" + p.lastname + "','" + p.phoneNo + "','" + p.address + "','" + p.password + "','" + Convert.ToChar(p.gender) + "','" + p.imgsrc + "','" + p.Type + "','" + p.CNIC + "')";
+            SqlCommand cmd = new SqlCommand("select * from Tutor Where email= '" + p.email + "' or CNIC='" + p.CNIC + "'", new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                cmd.Connection.Close();
+                sdr.Close();
+                return new CUD { rowEffected = x, Reason = "Email or CNIC Already Taken" };
+            }
+            else
+            {
+                cmd.Connection.Close();
+                sdr.Close();
+                SqlCommand cmd2 = new SqlCommand("select * from Student Where email= '" + p.email + "'", new SqlConnection(connectionString));
+                cmd2.Connection.Open();
+                SqlDataReader sdr1 = cmd2.ExecuteReader();
+                if (sdr1.HasRows)
+                {
+                    cmd2.Connection.Close();
+                    sdr1.Close();
+                    return new CUD { rowEffected = x, Reason = "Email Already Taken" };
+                }
+                else
+                {
+                    cmd2.Connection.Close();
+                    sdr1.Close();
+                    SqlCommand cmd3 = new SqlCommand("select * from PArent where email='" + p.email + "' or cnic='" + p.CNIC + "'", new SqlConnection(connectionString));
+                    cmd3.Connection.Open();
+                    SqlDataReader sdr4 = cmd3.ExecuteReader();
+                    if (sdr4.HasRows)
+                    {
+                        cmd3.Connection.Close();
+                        sdr4.Close();
+                        return new CUD { rowEffected = x, Reason = "Email or CNIC Already Taken" };
+                    }
+                    else
+                    {
+                        cmd3.Connection.Close();
+                        sdr4.Close();
+                        SqlCommand cmd1 = new SqlCommand(b, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        x = cmd1.ExecuteNonQuery();
+                        cmd1.Connection.Close();
+                        return new CUD { rowEffected = x, Reason = "Successfully Registered" };
+                    }
+                }
+            }
 
+            System.Diagnostics.Debug.WriteLine(x, b);
         }
 
         public CUD StudentCourses(string Course, string email)
@@ -380,6 +457,34 @@ namespace MyWcfService1
             sc.Open();
             foreach (var item in Sc)
             {
+                if (item.M == "B")
+                {
+                    item.M = "1";
+                }
+                if (item.T == "B")
+                {
+                    item.T = "1";
+                }
+                if (item.W == "B")
+                {
+                    item.W = "1";
+                }
+                if (item.Th == "B")
+                {
+                    item.Th = "1";
+                }
+                if (item.F == "B")
+                {
+                    item.F = "1";
+                }
+                if (item.S == "B")
+                {
+                    item.S = "1";
+                }
+                if (item.Su == "B")
+                {
+                    item.Su = "1";
+                }
                 counter++;
                 string Query = "select * from Studentschedual Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
                 SqlCommand cmd = new SqlCommand(Query, sc);
@@ -415,6 +520,34 @@ namespace MyWcfService1
             sc.Open();
             foreach (var item in Sc)
             {
+                if (item.M == "B")
+                {
+                    item.M = "1";
+                }
+                if (item.T == "B")
+                {
+                    item.T = "1";
+                }
+                if (item.W == "B")
+                {
+                    item.W = "1";
+                }
+                if (item.Th == "B")
+                {
+                    item.Th = "1";
+                }
+                if (item.F == "B")
+                {
+                    item.F = "1";
+                }
+                if (item.S == "B")
+                {
+                    item.S = "1";
+                }
+                if (item.Su == "B")
+                {
+                    item.Su = "1";
+                }
                 counter++;
                 string Query = "select * from tutorschedual Where email='" + item.AridNo + "' and timming ='" + item.Timming + "'";
                 SqlCommand cmd = new SqlCommand(Query, sc);
@@ -891,6 +1024,48 @@ namespace MyWcfService1
 
         public List<Schedual> GetStudentSche(string email)
         {
+            string q = "select * from RequestTutor where semail='" + email + "'";
+            List<Schedual> schedual1 = new List<Schedual>();
+            SqlCommand cmd2 = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd2.Connection.Open();
+            SqlDataReader sdr2 = cmd2.ExecuteReader();
+            while (sdr2.Read())
+            {
+                Schedual sc = new Schedual();
+
+                sc.Timming = sdr2["timming"].ToString();
+                if (sdr2["Day"].ToString() == "Monday")
+                {
+                    sc.M = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Tuesday")
+                {
+                    sc.T = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Wednesday")
+                {
+                    sc.W = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Thursday")
+                {
+                    sc.Th = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Friday")
+                {
+                    sc.F = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Saturday")
+                {
+                    sc.S = "1";
+                }
+                else
+                {
+                    sc.Su = "1";
+                }
+                schedual1.Add(sc);
+            }
+            cmd2.Connection.Close();
+            sdr2.Close();
             List<Schedual> schedual = new List<Schedual>();
             SqlCommand cmd = new SqlCommand("select * from studentschedual where email='" + email + "' and  countRows < 23 order by countRows asc", new SqlConnection(connectionString));
             cmd.Connection.Open();
@@ -900,57 +1075,135 @@ namespace MyWcfService1
                 Schedual sc = new Schedual();
                 sc.AridNo = sdr["email"].ToString();
                 sc.Timming = sdr["Timming"].ToString();
-                if (sdr["monday"].ToString() == "True")
+                if (sdr["monday"].ToString() == "1")
                 {
-                    sc.M = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.M == sdr["Monday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.M = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.M = "1";
+                        }
+                    }
+
                 }
                 else
                 {
                     sc.M = "0";
                 }
-                if (sdr["tuesday"].ToString() == "True")
+                if (sdr["tuesday"].ToString() == "1")
                 {
-                    sc.T = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.T == sdr["Tuesday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.T = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.T = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.T = "0";
                 }
-                if (sdr["wednesday"].ToString() == "True")
+                if (sdr["wednesday"].ToString() == "1")
                 {
-                    sc.W = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.W == sdr["wednesday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.W = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.W = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.W = "0";
                 }
-                if (sdr["thursday"].ToString() == "True")
+                if (sdr["thursday"].ToString() == "1")
                 {
-                    sc.Th = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.Th == sdr["thursday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.Th = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.Th = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.Th = "0";
                 }
-                if (sdr["friday"].ToString() == "True")
+                if (sdr["friday"].ToString() == "1")
                 {
-                    sc.F = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.F == sdr["Friday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.F = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.F = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.F = "0";
                 }
-                if (sdr["saturday"].ToString() == "True")
+                if (sdr["saturday"].ToString() == "1")
                 {
-                    sc.S = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.S == sdr["saturday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.S = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.S = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.S = "0";
                 }
-                if (sdr["sunday"].ToString() == "True")
+                if (sdr["sunday"].ToString() == "1")
                 {
-                    sc.Su = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.Su == sdr["sunday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.Su = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.Su = "1";
+                        }
+                    }
                 }
                 else
                 {
@@ -965,6 +1218,7 @@ namespace MyWcfService1
                 //sc.Su = sdr["Sunday"].ToString();
                 schedual.Add(sc);
             }
+        
             cmd.Connection.Close();
             return schedual;
         }
@@ -972,6 +1226,48 @@ namespace MyWcfService1
 
         public List<Schedual> GetTutorSche(string email)
         {
+            string q = "select * from RequestTutor where temail='" + email + "'";
+            List<Schedual> schedual1 = new List<Schedual>();
+            SqlCommand cmd2 = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd2.Connection.Open();
+            SqlDataReader sdr2 = cmd2.ExecuteReader();
+            while (sdr2.Read())
+            {
+                Schedual sc = new Schedual();
+                
+                sc.Timming = sdr2["timming"].ToString();
+                if (sdr2["Day"].ToString() == "Monday")
+                {
+                    sc.M = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Tuesday")
+                {
+                    sc.T = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Wednesday")
+                {
+                    sc.W = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Thursday")
+                {
+                    sc.Th = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Friday")
+                {
+                    sc.F = "1";
+                }
+                else if (sdr2["Day"].ToString() == "Saturday")
+                {
+                    sc.S = "1";
+                }
+                else
+                {
+                    sc.Su = "1";
+                }
+                schedual1.Add(sc);
+            }
+            cmd2.Connection.Close();
+            sdr2.Close();
             List<Schedual> schedual = new List<Schedual>();
             SqlCommand cmd = new SqlCommand("select * from tutorschedual where email='" + email + "' and countRows < 23 order by countRows asc", new SqlConnection(connectionString));
             cmd.Connection.Open();
@@ -981,57 +1277,134 @@ namespace MyWcfService1
                 Schedual sc = new Schedual();
                 sc.AridNo = sdr["email"].ToString();
                 sc.Timming = sdr["Timming"].ToString();
-                if (sdr["monday"].ToString() == "True")
+                if (sdr["monday"].ToString() == "1")
                 {
-                    sc.M = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if(item.M==sdr["Monday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.M = "B";
+                            break;
+                        }else
+                        {
+                            sc.M = "1";
+                        }
+                    }
+                    
                 }
                 else
                 {
                     sc.M = "0";
                 }
-                if (sdr["tuesday"].ToString() == "True")
+                if (sdr["tuesday"].ToString() == "1")
                 {
-                    sc.T = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.T == sdr["Tuesday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.T = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.T = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.T = "0";
                 }
-                if (sdr["wednesday"].ToString() == "True")
+                if (sdr["wednesday"].ToString() == "1")
                 {
-                    sc.W = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.W == sdr["wednesday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.W = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.W = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.W = "0";
                 }
-                if (sdr["thursday"].ToString() == "True")
+                if (sdr["thursday"].ToString() == "1")
                 {
-                    sc.Th = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.Th == sdr["thursday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.Th = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.Th = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.Th = "0";
                 }
-                if (sdr["friday"].ToString() == "True")
+                if (sdr["friday"].ToString() == "1")
                 {
-                    sc.F = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.F == sdr["Friday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.F = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.F = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.F = "0";
                 }
-                if (sdr["saturday"].ToString() == "True")
+                if (sdr["saturday"].ToString() == "1")
                 {
-                    sc.S = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.S == sdr["saturday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.S = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.S = "1";
+                        }
+                    }
                 }
                 else
                 {
                     sc.S = "0";
                 }
-                if (sdr["sunday"].ToString() == "True")
+                if (sdr["sunday"].ToString() == "1")
                 {
-                    sc.Su = "1";
+                    foreach (var item in schedual1.ToList())
+                    {
+                        if (item.Su == sdr["sunday"].ToString() && sc.Timming == item.Timming)
+                        {
+                            sc.Su = "B";
+                            break;
+                        }
+                        else
+                        {
+                            sc.Su = "1";
+                        }
+                    }
                 }
                 else
                 {
@@ -1351,7 +1724,7 @@ namespace MyWcfService1
         public CUD TutorCancelStudentClassses(HeldClassess t)
         {
             int x = 0;
-            string Held = "Cancel";
+            string Held = "Cancl";
             string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
@@ -1409,6 +1782,7 @@ namespace MyWcfService1
                     password = sdr["password"].ToString(),
                     Type = sdr["Type"].ToString(),
                     imgsrc = sdr["imgsrc"].ToString(),
+
                     Error = "Data Exist In Database"
                 };
             }
@@ -1438,10 +1812,36 @@ namespace MyWcfService1
                 }
                 else
                 {
-                    return new Student { Error = "Email or Password Incorrect" };
+                    sdr1.Close();
+                    cmd1.Connection.Close();
+                    var query = "Select * from Parent where email = '" + Email + "' and Password = '" + Pass + "'";
+                    SqlCommand cmd2 = new SqlCommand(query, new SqlConnection(connectionString));
+                    System.Diagnostics.Debug.WriteLine(a);
+                    cmd2.Connection.Open();
+                    SqlDataReader sdr2 = cmd2.ExecuteReader();
+                    if (sdr2.HasRows)
+                    {
+                        sdr2.Read();
+                        return new Student
+                        {
+                            firstname = sdr2["First_Name"].ToString(),
+                            lastname = sdr2["Last_Name"].ToString(),
+                            email = sdr2["Email"].ToString(),
+                            gender = Convert.ToChar(sdr2["gender"].ToString()),
+                            password = sdr2["password"].ToString(),
+                            Type = sdr2["Type"].ToString(),
+                            imgsrc = sdr2["imgsrc"].ToString(),
+                            CNIC = sdr2["CNIC"].ToString(),
+                            Error = "Data Exist In Database"
+                        };
+                    }
+                    else
+                    {
+                        sdr2.Close();
+                        cmd2.Connection.Close();
+                        return new Student { Error = "Email or Password Incorrect" };
+                    }
                 }
-                sdr1.Close();
-                cmd1.Connection.Close();
             }
         }
 
@@ -1644,7 +2044,7 @@ namespace MyWcfService1
             return fd;
         }
 
-        public List<FinanceData> ViewDeatilsTutorFinance(string temail, string semail,string fname,string lname,string type)
+        public List<FinanceData> ViewDeatilsTutorFinance(string temail, string semail, string fname, string lname, string type)
         {
             if (type == "Student")
             {
@@ -1673,7 +2073,8 @@ namespace MyWcfService1
                 cmd.Connection.Close();
 
                 return fd;
-            }else
+            }
+            else
             {
                 string name = fname + " " + lname;
                 List<FinanceData> fd = new List<FinanceData>();
@@ -1701,6 +2102,29 @@ namespace MyWcfService1
 
                 return fd;
             }
+        }
+
+        public List<Student> GetChildrenRec(string cnic)
+        {
+            List<Student> student = new List<Student>();
+            SqlCommand cmd = new SqlCommand("select * from student where cnic ='" + cnic + "'", new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Student s = new Student();
+                s.email = sdr["email"].ToString();
+                s.firstname = sdr["first_name"].ToString();
+                s.lastname = sdr["last_name"].ToString();
+                s.imgsrc = sdr["imgsrc"].ToString();
+                s.phoneNo = sdr["phone_no"].ToString();
+                s.gender = Convert.ToChar(sdr["gender"].ToString());
+                s.Type = sdr["type"].ToString();
+                student.Add(s);
+            }
+            cmd.Connection.Close();
+            sdr.Close();
+            return student;
         }
     }
 }
