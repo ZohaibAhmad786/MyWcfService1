@@ -38,7 +38,8 @@ namespace MyWcfService1
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/InserStudent"///{email}/{firstname}/{lastname}/{phoneNo}/{discipline}/{semester}/{password}/{address}/{gender}"
             )]
-        /*int*/CUD InsertStudentData(Student s);//string email, string firstname, string lastname, string phoneNo, string discipline, string semester, string password, string address, string gender
+        /*int*/
+        CUD InsertStudentData(Student s);//string email, string firstname, string lastname, string phoneNo, string discipline, string semester, string password, string address, string gender
 
         [OperationContract]
         [WebInvoke(
@@ -66,7 +67,7 @@ namespace MyWcfService1
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/LoginStudent/{email}/{pass}"
             )]
-        Student StudentLogin(string email,string pass);
+        Student StudentLogin(string email, string pass);
 
 
         [OperationContract]
@@ -123,7 +124,7 @@ namespace MyWcfService1
            ResponseFormat = WebMessageFormat.Json,
            UriTemplate = "/AddStudentCourses/{Course}/{email}"
            )]
-        CUD StudentCourses(string Course,string email);
+        CUD StudentCourses(string Course, string email);
 
         [OperationContract]
         [WebInvoke(
@@ -132,7 +133,7 @@ namespace MyWcfService1
            ResponseFormat = WebMessageFormat.Json,
            UriTemplate = "/AddTutorCourses/{Course}/{email}/{fees}"
            )]
-        CUD TutorCourses(string Course,string email,string fees);
+        CUD TutorCourses(string Course, string email, string fees);
 
 
         [OperationContract]
@@ -166,7 +167,7 @@ namespace MyWcfService1
           ResponseFormat = WebMessageFormat.Json,
           UriTemplate = "/Monday/{email}/{sub}"
           )]
-        List<Days> Monday(string email,string sub);
+        List<Days> Monday(string email, string sub);
 
         [OperationContract]
         [WebInvoke(
@@ -260,7 +261,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/RequestManaging/{sub}/{email}"
         )]
-        List<StudentRequest> RequestAcceptOrReject(string sub,string email);
+        List<StudentRequest> RequestAcceptOrReject(string sub, string email);
 
 
         [OperationContract]
@@ -270,7 +271,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/DeleteStudentCourse/{email}/{sub}"
         )]
-        CUD StdDelCourse(string email,string sub);
+        CUD StdDelCourse(string email, string sub);
 
 
         [OperationContract]
@@ -318,7 +319,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/TodayClasses/{Email}/{day}/{datetimetoday}"
         )]
-        List<HeldClassess> TodayStudentClasses(string Email,string day,string datetimetoday);
+        List<HeldClassess> TodayStudentClasses(string Email, string day, string datetimetoday);
 
 
         [OperationContract]
@@ -347,7 +348,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/Login/{Email}/{Pass}"
         )]
-        Student Login(string Email,string Pass);
+        Student Login(string Email, string Pass);
 
         [OperationContract]
         [WebInvoke(
@@ -404,7 +405,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/ViewDetailsTutorFinance/{temail}/{semail}/{fname}/{lname}/{type}"
         )]
-        List<FinanceData> ViewDeatilsTutorFinance(string temail,string semail, string fname, string lname,string type);
+        List<FinanceData> ViewDeatilsTutorFinance(string temail, string semail, string fname, string lname, string type);
 
 
         [OperationContract]
@@ -415,6 +416,36 @@ namespace MyWcfService1
         UriTemplate = "/GetChildrenRec/{cnic}"
         )]
         List<Student> GetChildrenRec(string cnic);
+
+
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/CancelClasses/{email}/{type}"
+       )]
+        List<StudentRequest> CancelClasses(string email,string type);
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/FreeSlotes/{temail}/{semail}/{type}"
+       )]
+        List<StudentRequest> FreeSlotes(string temail, string semail,string type);
+
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "POST",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/ReschduledClass"
+       )]
+        CUD RescheduledClass(Rescheduled r);
 
         //HeldStudentClass
 

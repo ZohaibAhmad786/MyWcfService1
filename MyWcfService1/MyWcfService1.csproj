@@ -115,6 +115,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Rescheduled.cs" />
     <Compile Include="Schedual.cs" />
     <Compile Include="Student.cs" />
     <Compile Include="StudentData.cs" />
