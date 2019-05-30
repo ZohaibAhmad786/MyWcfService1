@@ -11,5 +11,10 @@
         public string Name { get; set; }
         public string Reason { get; set; }
         public string status { get; set; }
+        public string preDay { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string prTimming { get; set; }
+        public string Type { get; set; }
     }
 }

@@ -39,20 +39,6 @@ namespace MyWcfService1
         {
             List<Courses> allcourse = new List<Courses>();
             List<Courses> senrollcourse = new List<Courses>();
-            //string q = "select  distinct Title,Course.CourseCode from course LEft join studentcourses on studentcourses.coursecode = course.title where StudentCourses.CourseCode is null or StudentCourses.Email!='" + email + "'";
-            //SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
-            //cmd.Connection.Open();
-            //SqlDataReader sdr = cmd.ExecuteReader();
-            //while (sdr.Read())
-            //{
-            //    Courses c = new Courses();
-            //    c.CourseCode = sdr["CourseCode"].ToString();
-            //    c.Title = sdr["Title"].ToString();
-            //    course.Add(c);
-            //}
-            //sdr.Close();
-            //cmd.Connection.Close();
-            //return course;
             string query1 = "select * from course";
             string query2 = "select * from studentcourses where email='" + email + "'";
             SqlCommand cmd = new SqlCommand(query1, new SqlConnection(connectionString));
@@ -99,21 +85,6 @@ namespace MyWcfService1
 
         public List<Courses> TCourses(string email)
         {
-            //List<Courses> course = new List<Courses>();
-            //string q = "select  distinct Title,Course.CourseCode from course LEft join TutorCourses on TutorCourses.coursecode = course.title where TutorCourses.CourseCode is null or TutorCourses.Email!='" + email + "'";
-            //SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
-            //cmd.Connection.Open();
-            //SqlDataReader sdr = cmd.ExecuteReader();
-            //while (sdr.Read())
-            //{
-            //    Courses c = new Courses();
-            //    c.CourseCode = sdr["CourseCode"].ToString();
-            //    c.Title = sdr["Title"].ToString();
-            //    course.Add(c);
-            //}
-            //sdr.Close();
-            //cmd.Connection.Close();
-            //return course;
             List<Courses> allcourse = new List<Courses>();
             List<Courses> senrollcourse = new List<Courses>();
             string query1 = "select * from course";
@@ -457,7 +428,7 @@ namespace MyWcfService1
             sc.Open();
             foreach (var item in Sc)
             {
-                if (item.M == "B"  || item.M == "R" )
+                if (item.M == "B" || item.M == "R")
                 {
                     item.M = "1";
                 }
@@ -1121,26 +1092,67 @@ namespace MyWcfService1
                 {
                     foreach (var item in schedual1.ToList())
                     {
+
                         if (item.M == sdr["Monday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.M = "B";
-                            break;
+
+                            if (schedual0.Count == 0)
+                            {
+                                sc.M = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0.ToList())
+                                {
+                                    if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.M = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.M = "B";
+                                        //break;
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.M = "1";
+                            }
+
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if(item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.M = "R";
-                                    break;
-                                }else
-                                {
-                                    sc.M = "1";
-                                }
-                            }
-                            
+                            sc.M = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.M = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.M = "1";
+                        //            //break;
+                        //        }
+                        //    }
+
+                        //}
+                        //else
+                        //{
+                        //    sc.M = "1";
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.M = "1";
                     }
 
                 }
@@ -1154,24 +1166,59 @@ namespace MyWcfService1
                     {
                         if (item.T == sdr["Tuesday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.T = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.T = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.T = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.T = "B";
+                                    }
+                                }
+                                break;
+                            }else
+                            {
+                                sc.T = "1";
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.T = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.T = "1";
-                                }
-                            }
+                            sc.T = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.T = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.T = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.T = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.T = "1";
                     }
                 }
                 else
@@ -1184,24 +1231,61 @@ namespace MyWcfService1
                     {
                         if (item.W == sdr["wednesday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.W = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.W = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.W = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.W = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.W = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.W = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.W = "1";
-                                }
-                            }
+                            sc.W = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.W = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.W = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.W = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.W = "1";
                     }
                 }
                 else
@@ -1214,24 +1298,61 @@ namespace MyWcfService1
                     {
                         if (item.Th == sdr["thursday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.Th = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.Th = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.Th = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.Th = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.Th = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.Th = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.Th = "1";
-                                }
-                            }
+                            sc.Th = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.Th = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.Th = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.Th = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.Th = "1";
                     }
                 }
                 else
@@ -1244,24 +1365,61 @@ namespace MyWcfService1
                     {
                         if (item.F == sdr["Friday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.F = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.F = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.F = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.F = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.F = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.F = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.F = "1";
-                                }
-                            }
+                            sc.F = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.F = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.F = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.F = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.F = "1";
                     }
                 }
                 else
@@ -1274,24 +1432,61 @@ namespace MyWcfService1
                     {
                         if (item.S == sdr["saturday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.S = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.S = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.S = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.S = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.S = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.S = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.S = "1";
-                                }
-                            }
+                            sc.S = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.S = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.S = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.S = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.S = "1";
                     }
                 }
                 else
@@ -1304,24 +1499,61 @@ namespace MyWcfService1
                     {
                         if (item.Su == sdr["sunday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.Su = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.Su = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.Su = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.Su = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.Su = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.Su = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.Su = "1";
-                                }
-                            }
+                            sc.Su = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.Su = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.Su = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.Su = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.Su = "1";
                     }
                 }
                 else
@@ -1337,7 +1569,7 @@ namespace MyWcfService1
                 //sc.Su = sdr["Sunday"].ToString();
                 schedual.Add(sc);
             }
-        
+            sdr.Close();
             cmd.Connection.Close();
             return schedual;
         }
@@ -1394,7 +1626,7 @@ namespace MyWcfService1
             while (sdr2.Read())
             {
                 Schedual sc = new Schedual();
-                
+
                 sc.Timming = sdr2["timming"].ToString();
                 if (sdr2["Day"].ToString() == "Monday")
                 {
@@ -1437,31 +1669,487 @@ namespace MyWcfService1
                 Schedual sc = new Schedual();
                 sc.AridNo = sdr["email"].ToString();
                 sc.Timming = sdr["Timming"].ToString();
+                //    if (sdr["monday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+
+                //            if (item.M == sdr["Monday"].ToString() && sc.Timming == item.Timming)
+                //            {
+
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.M = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0.ToList())
+                //                    {
+                //                        if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.M = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.M = "B";
+                //                            //break;
+                //                        }
+                //                    }
+                //                }
+
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.M = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.M = "1";
+                //                        //break;
+                //                    }
+                //                }
+
+                //            }
+                //            else
+                //            {
+                //                sc.M = "1";
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.M = "1";
+                //        }
+
+                //    }
+                //    else
+                //    {
+                //        sc.M = "0";
+                //    }
+                //    if (sdr["tuesday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.T == sdr["Tuesday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.T = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.T = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.T = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.T = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.T = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.T = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.T = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.T = "0";
+                //    }
+                //    if (sdr["wednesday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.W == sdr["wednesday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.W = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.W = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.W = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.W = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.W = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.W = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.W = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.W = "0";
+                //    }
+                //    if (sdr["thursday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.Th == sdr["thursday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.Th = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.Th = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.Th = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.Th = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.Th = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.Th = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.Th = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.Th = "0";
+                //    }
+                //    if (sdr["friday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.F == sdr["Friday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.F = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.F = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.F = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.F = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.F = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.F = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.F = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.F = "0";
+                //    }
+                //    if (sdr["saturday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.S == sdr["saturday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.S = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.S = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.S = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.S = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.S = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.S = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.S = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.S = "0";
+                //    }
+                //    if (sdr["sunday"].ToString() == "1")
+                //    {
+                //        foreach (var item in schedual1.ToList())
+                //        {
+                //            if (item.Su == sdr["sunday"].ToString() && sc.Timming == item.Timming)
+                //            {
+                //                if (schedual0.Count == 0)
+                //                {
+                //                    sc.Su = "B";
+                //                    break;
+                //                }
+                //                else
+                //                {
+                //                    foreach (var item1 in schedual0)
+                //                    {
+                //                        if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                //                        {
+                //                            sc.Su = "R";
+                //                            break;
+                //                        }
+                //                        else
+                //                        {
+                //                            sc.Su = "B";
+                //                        }
+                //                    }
+                //                }
+                //            }
+                //            else if (schedual0.ToList().Count > 0)
+                //            {
+                //                foreach (var item1 in schedual0)
+                //                {
+                //                    if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                //                    {
+                //                        sc.Su = "R";
+                //                        break;
+                //                    }
+                //                    else
+                //                    {
+                //                        sc.Su = "1";
+                //                    }
+                //                }
+                //            }
+                //            else
+                //            {
+                //                sc.Su = "1";
+                //                //break;
+                //            }
+                //        }
+                //        if (schedual1.ToList().Count == 0)
+                //        {
+                //            sc.Su = "1";
+                //        }
+                //    }
+                //    else
+                //    {
+                //        sc.Su = "0";
+                //    }
+                //    //sc.M = sdr["Monday"].ToString();
+                //    //sc.T = sdr["Tuesday"].ToString();
+                //    //sc.W = sdr["Wednesday"].ToString();
+                //    //sc.Th = sdr["Thursday"].ToString();
+                //    //sc.F = sdr["Friday"].ToString();
+                //    //sc.S = sdr["Saturday"].ToString();
+                //    //sc.Su = sdr["Sunday"].ToString();
+                //    schedual.Add(sc);
+                //}
                 if (sdr["monday"].ToString() == "1")
                 {
                     foreach (var item in schedual1.ToList())
                     {
-                        if(item.M==sdr["Monday"].ToString() && sc.Timming == item.Timming)
+
+                        if (item.M == sdr["Monday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.M = "B";
-                            break;
-                        }else
-                        {
-                            foreach (var item1 in schedual0)
+
+                            if (schedual0.Count == 0)
                             {
-                                if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.M = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.M = "1";
-                                }
+                                sc.M = "B";
+                                break;
                             }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0.ToList())
+                                {
+                                    if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.M = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.M = "B";
+                                        //break;
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.M = "1";
+                            }
+
                         }
+                        else
+                        {
+                            sc.M = "1";
+                        }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.M == sdr["Monday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.M = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.M = "1";
+                        //            //break;
+                        //        }
+                        //    }
+
+                        //}
+                        //else
+                        //{
+                        //    sc.M = "1";
+                        //}
                     }
-                    
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.M = "1";
+                    }
+
                 }
                 else
                 {
@@ -1473,24 +2161,60 @@ namespace MyWcfService1
                     {
                         if (item.T == sdr["Tuesday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.T = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.T = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.T = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.T = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.T = "1";
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.T = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.T = "1";
-                                }
-                            }
+                            sc.T = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.T == sdr["Tuesday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.T = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.T = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.T = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.T = "1";
                     }
                 }
                 else
@@ -1503,24 +2227,61 @@ namespace MyWcfService1
                     {
                         if (item.W == sdr["wednesday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.W = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.W = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.W = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.W = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.W = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.W = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.W = "1";
-                                }
-                            }
+                            sc.W = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.W == sdr["wednesday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.W = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.W = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.W = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.W = "1";
                     }
                 }
                 else
@@ -1533,24 +2294,61 @@ namespace MyWcfService1
                     {
                         if (item.Th == sdr["thursday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.Th = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.Th = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.Th = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.Th = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.Th = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.Th = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.Th = "1";
-                                }
-                            }
+                            sc.Th = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.Th == sdr["thursday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.Th = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.Th = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.Th = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.Th = "1";
                     }
                 }
                 else
@@ -1563,24 +2361,61 @@ namespace MyWcfService1
                     {
                         if (item.F == sdr["Friday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.F = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.F = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.F = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.F = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.F = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.F = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.F = "1";
-                                }
-                            }
+                            sc.F = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.F == sdr["Friday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.F = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.F = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.F = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.F = "1";
                     }
                 }
                 else
@@ -1593,24 +2428,61 @@ namespace MyWcfService1
                     {
                         if (item.S == sdr["saturday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.S = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.S = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.S = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.S = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.S = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.S = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.S = "1";
-                                }
-                            }
+                            sc.S = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.S == sdr["saturday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.S = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.S = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.S = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.S = "1";
                     }
                 }
                 else
@@ -1623,24 +2495,61 @@ namespace MyWcfService1
                     {
                         if (item.Su == sdr["sunday"].ToString() && sc.Timming == item.Timming)
                         {
-                            sc.Su = "B";
-                            break;
+                            if (schedual0.Count == 0)
+                            {
+                                sc.Su = "B";
+                                break;
+                            }
+                            else if (schedual0.ToList().Count > 0)
+                            {
+                                foreach (var item1 in schedual0)
+                                {
+                                    if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                                    {
+                                        sc.Su = "R";
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        sc.Su = "B";
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                sc.Su = "1";
+                                //break;
+                            }
                         }
                         else
                         {
-                            foreach (var item1 in schedual0)
-                            {
-                                if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
-                                {
-                                    sc.Su = "R";
-                                    break;
-                                }
-                                else
-                                {
-                                    sc.Su = "1";
-                                }
-                            }
+                            sc.Su = "1";
                         }
+                        //else if (schedual0.ToList().Count > 0)
+                        //{
+                        //    foreach (var item1 in schedual0)
+                        //    {
+                        //        if (item1.Su == sdr["sunday"].ToString() && sc.Timming == item1.Timming)
+                        //        {
+                        //            sc.Su = "R";
+                        //            break;
+                        //        }
+                        //        else
+                        //        {
+                        //            sc.Su = "1";
+                        //        }
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    sc.Su = "1";
+                        //    //break;
+                        //}
+                    }
+                    if (schedual1.ToList().Count == 0)
+                    {
+                        sc.Su = "1";
                     }
                 }
                 else
@@ -1656,6 +2565,7 @@ namespace MyWcfService1
                 //sc.Su = sdr["Sunday"].ToString();
                 schedual.Add(sc);
             }
+            sdr.Close();
             cmd.Connection.Close();
             return schedual;
         }
@@ -1840,7 +2750,7 @@ namespace MyWcfService1
         public List<toTutorRequest> TutorAcceptRequest(string email)
         {
             List<toTutorRequest> tutorReq = new List<toTutorRequest>();
-            string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.Semail) as [fullname],Temail, (select Tutor.First_Name+' '+Tutor.Last_Name  from Tutor where Email=RequestTutor.TEmail) as [fullname1],SEmail,Timming,[Day],[Subject] from RequestTutor where TEmail='" + email + "' or Semail='" + email + "' and Status=1";
+            string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.Semail) as [fullname],Temail, (select Tutor.First_Name+' '+Tutor.Last_Name  from Tutor where Email=RequestTutor.TEmail) as [fullname1],SEmail,Temail,Timming,[Day],[Subject] from RequestTutor where status=1 and TEmail='" + email + "' or Semail='" + email + "' and Status=1";
             SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -1860,7 +2770,7 @@ namespace MyWcfService1
                     }
                     else
                     {
-                        t.SEmail = sdr["Semail"].ToString();
+                        t.SEmail = sdr["semail"].ToString();
                         t.Subj = sdr["subject"].ToString();
                         t.Timmings = sdr["timming"].ToString();
                         t.Day = sdr["Day"].ToString();
@@ -1906,6 +2816,7 @@ namespace MyWcfService1
         {
             string q = "select (select Email from Student where Email=rt.SEmail) as StuEmail,(select btnStatus from HeldStuClass hs where hs.Semail=rt.SEmail and hs.Temail=rt.TEmail and hs.DayTimeMonth='" + datetimetoday + "' and hs.Timmings=rt.Timming and hs.[Day]=rt.[Day] and hs.[Subject]=rt.[Subject]) as bitStatus,(select First_Name+' '+Last_Name from Student where Email=rt.SEmail) as [fullname],[Day],[Subject],[Timming] from requesttutor rt where rt.TEmail='" + Email + "' and rt.[Day]='" + day + "' and rt.[Status]=2";
             List<HeldClassess> Hldcls = new List<HeldClassess>();
+            List<HeldClassess> Hldclss = new List<HeldClassess>();
             // string query = "select (select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.SEmail) as [fullname],SEmail,Timming,[Day],[Subject] from RequestTutor where TEmail='" + email + "' and subject='" + sub + "' and Status=1";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
@@ -1927,6 +2838,54 @@ namespace MyWcfService1
                 }
 
                 sdr.Close();
+                cmd.Connection.Close();
+
+                string rescueQuery = "select * from HeldStuClass where temail='" + Email + "' and day='"+day+ "' and [DayTimeMonth]='"+datetimetoday+"'";
+                SqlCommand cmd3 = new SqlCommand(rescueQuery, new SqlConnection(connectionString));
+                cmd3.Connection.Open();
+                SqlDataReader sr = cmd3.ExecuteReader();
+                while (sr.Read())
+                {
+                    HeldClassess t = new HeldClassess();
+                    t.SEmail = sr["SEmail"].ToString();
+                    t.TuEmail = Email;
+                    t.Subj = sr["subject"].ToString();
+                    t.Timmings = sr["timmings"].ToString();
+                    t.Day = sr["Day"].ToString();
+                    t.DateTimeToday = sr["DayTimeMonth"].ToString();
+                    Hldclss.Add(t);
+                }
+                sr.Close();
+                cmd3.Connection.Close();
+                string resQuery = "select  (select First_Name+' '+Last_Name from Student where Email=SEmail) as fullname,semail,subject,timmings,day from Reschedule where  TEmail='" + Email + "' and day='" + day + "' and StartDate='" + datetimetoday.Split('-')[0]+"-" + "0"+datetimetoday.Split('-')[1]+"-" + datetimetoday.Split('-')[2] + "'";
+                SqlCommand cmd2 = new SqlCommand(resQuery, new SqlConnection(connectionString));
+                cmd2.Connection.Open();
+                SqlDataReader sdr1 = cmd2.ExecuteReader();
+                while (sdr1.Read())
+                {
+                    HeldClassess t = new HeldClassess();
+                    t.SEmail = sdr1["SEmail"].ToString();
+                    t.Subj = sdr1["subject"].ToString();
+                    t.Timmings = sdr1["timmings"].ToString();
+                    t.TuEmail = Email;
+                    t.Day = sdr1["Day"].ToString();
+                    t.Name = sdr1["fullname"].ToString();
+                    t.DateTimeToday = datetimetoday;
+                    t.status = "cancel";
+                    Hldcls.Add(t);
+                }
+                sdr1.Close();
+                cmd2.Connection.Close();
+                foreach (var item in Hldcls.ToList())
+                {
+                    foreach (var item1 in Hldclss.ToList())
+                    {
+                        if(item.SEmail==item1.SEmail && item.TuEmail == item1.TuEmail && item.Timmings==item1.Timmings && item.DateTimeToday==item1.DateTimeToday && item.Day==item1.Day && item.Subj==item1.Subj)
+                        {
+                            item.status = "1";
+                        }
+                    }
+                }
                 return Hldcls;
             }
             else
@@ -1934,48 +2893,90 @@ namespace MyWcfService1
                 HeldClassess t = new HeldClassess();
                 t.Reason = "No Classes Today";
                 sdr.Close();
+                cmd.Connection.Close();
                 return Hldcls;
             }
-            cmd.Connection.Close();
+            
         }
 
         public CUD TutorHeldStudentClassses(HeldClassess t)
         {
-            int x = 0;
-            string Held = "Held";
-            string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
-            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
-            cmd.Connection.Open();
-            x = cmd.ExecuteNonQuery();
-
-            cmd.Connection.Close();
-            if (x == 1)
+            if (t.status=="cancel")
             {
-                return new CUD { Reason = "Held Class", rowEffected = x };
+                var startdate = DateTime.Now.ToShortDateString();
+                startdate=startdate.Replace('/', '-');
+                string q = "select PreTimming,PreDay,subject from Reschedule where temail='" + t.TuEmail + "' and timmings='" + t.Timmings + "' and subject='" + t.Subj + "' and enddate='' and startDate='"+startdate+"' ";
+                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                SqlDataReader sdr = cmd.ExecuteReader();
+                if (sdr.HasRows)
+                {
+                    sdr.Read();
+                    var preday = sdr["PreDay"].ToString();
+                    var subject = sdr["subject"].ToString();
+                    var PreTimming = sdr["PreTimming"].ToString();
+                    sdr.Close();
+                    cmd.Connection.Close();
+                    string query = "update [HeldStuClass] set [Timmings]='" + t.Timmings + "',day='" + t.Day + "',[HeldStatus]='held',[DayTimeMonth]='"+t.DateTimeToday+"' where temail='" + t.TuEmail + "' and semail='" + t.SEmail + "' and subject='" + t.Subj + "' and [Timmings]='" + PreTimming + "' and day='"+preday+"'";
+                    SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                    cmd1.Connection.Open();
+                    cmd1.ExecuteNonQuery();
+
+                    cmd1.Connection.Close();
+
+                }
+                else
+                {
+
+                }
+                cmd.Connection.Close();
+                return new CUD { Reason = "" };
             }
             else
             {
-                return new CUD { Reason = "Faild to Held Class", rowEffected = x };
+                int x = 0;
+                string Held = "Held";
+                string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
+                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                x = cmd.ExecuteNonQuery();
+
+                cmd.Connection.Close();
+                if (x == 1)
+                {
+                    return new CUD { Reason = "Held Class", rowEffected = x };
+                }
+                else
+                {
+                    return new CUD { Reason = "Faild to Held Class", rowEffected = x };
+                }
             }
         }
         public CUD TutorCancelStudentClassses(HeldClassess t)
         {
-            int x = 0;
-            string Held = "Cancl";
-            string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
-            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
-            cmd.Connection.Open();
-            x = cmd.ExecuteNonQuery();
+            //if (t.status=="cancel")
+            //{
+            //    return new CUD { Reason = "" };
+            //}
+            //else
+            //{
+                int x = 0;
+                string Held = "Cancl";
+                string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
+                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                x = cmd.ExecuteNonQuery();
 
-            cmd.Connection.Close();
-            if (x == 1)
-            {
-                return new CUD { Reason = "Cancel Class", rowEffected = x };
-            }
-            else
-            {
-                return new CUD { Reason = "Faild to cancel Class", rowEffected = x };
-            }
+                cmd.Connection.Close();
+                if (x == 1)
+                {
+                    return new CUD { Reason = "Cancel Class", rowEffected = x };
+                }
+                else
+                {
+                    return new CUD { Reason = "Faild to cancel Class", rowEffected = x };
+                }
+            //}
         }
 
         public CUD TutorRejectedRequest(toTutorRequest t)
@@ -2058,6 +3059,7 @@ namespace MyWcfService1
                     SqlDataReader sdr2 = cmd2.ExecuteReader();
                     if (sdr2.HasRows)
                     {
+                        cmd.Connection.Close();
                         sdr2.Read();
                         return new Student
                         {
@@ -2071,6 +3073,7 @@ namespace MyWcfService1
                             CNIC = sdr2["CNIC"].ToString(),
                             Error = "Data Exist In Database"
                         };
+
                     }
                     else
                     {
@@ -2108,7 +3111,7 @@ namespace MyWcfService1
         public List<toTutorRequest> StudentTimeTable(string Email)
         {
             List<toTutorRequest> obj = new List<toTutorRequest>();
-            var Query = "select(select First_Name + ' ' + Last_Name from Tutor where Email = Temail) as FullName,(select First_Name + ' ' + Last_Name from Student where Email = semail) as FullName1,Timming,Subject,Day,Temail,semail from RequestTutor where Semail = '" + Email + "' or temail = '" + Email + "' order by Day desc";
+            var Query = "select(select First_Name + ' ' + Last_Name from Tutor where Email = Temail) as FullName,(select First_Name + ' ' + Last_Name from Student where Email = semail) as FullName1,Timming,Subject,Day,Temail,semail from RequestTutor where Semail = '" + Email + "' or temail = '" + Email + "' and status=2 order by Day desc";
             SqlCommand cmd = new SqlCommand(Query, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -2364,7 +3367,7 @@ namespace MyWcfService1
             return student;
         }
 
-        public List<StudentRequest> CancelClasses(string email,string type)
+        public List<StudentRequest> CancelClasses(string email, string type)
         {
             if (type == "Student")
             {
@@ -2385,6 +3388,30 @@ namespace MyWcfService1
                 }
                 sdr.Close();
                 cmd.Connection.Close();
+                string query = "select * from Reschedule where endDate=''";
+                SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                SqlDataReader sdr1 = cmd1.ExecuteReader();
+                while (sdr1.Read())
+                {
+                    StudentRequest sr = new StudentRequest();
+                    sr.TEmail = sdr1["temail"].ToString();
+                    sr.Subject = sdr1["subject"].ToString();
+                    sr.Timming = sdr1["Pretimming"].ToString();
+                    foreach (var item in student.ToList())
+                    {
+                        if (sr.TEmail == item.SEmail && sr.Subject == item.Subject && sr.Timming == item.Timming)
+                        {
+                            student.Remove(item);
+                            break;
+                        }
+                    }
+
+                }
+                sdr1.Close();
+                cmd1.Connection.Close();
+
+
                 return student;
             }
             else
@@ -2406,6 +3433,28 @@ namespace MyWcfService1
                 }
                 sdr.Close();
                 cmd.Connection.Close();
+                string query = "select * from Reschedule where endDate=''";
+                SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                SqlDataReader sdr1 = cmd1.ExecuteReader();
+                while (sdr1.Read())
+                {
+                    StudentRequest sr = new StudentRequest();
+                    sr.TEmail = sdr1["semail"].ToString();
+                    sr.Subject = sdr1["subject"].ToString();
+                    sr.Timming = sdr1["Pretimming"].ToString();
+                    foreach (var item in student.ToList())
+                    {
+                        if (sr.TEmail == item.SEmail && sr.Subject == item.Subject && sr.Timming == item.Timming)
+                        {
+                            student.Remove(item);
+                            break;
+                        }
+                    }
+
+                }
+                sdr1.Close();
+                cmd1.Connection.Close();
                 return student;
             }
         }
@@ -2547,8 +3596,32 @@ namespace MyWcfService1
                         }
                     }
                 }
+                string query12 = "select * from Reschedule ";
+                SqlCommand cmd11 = new SqlCommand(query12, new SqlConnection(connectionString));
+                cmd11.Connection.Open();
+                SqlDataReader sdr11 = cmd11.ExecuteReader();
+                while (sdr11.Read())
+                {
+                    StudentRequest sr = new StudentRequest();
+                    sr.TEmail = sdr11["temail"].ToString();
+                    sr.Subject = sdr11["subject"].ToString();
+                    sr.Timming = sdr11["timmings"].ToString();
+                    sr.Day = sdr11["Day"].ToString();
+                    foreach (var item in student.ToList())
+                    {
+                        if (sr.TEmail == item.SEmail && sr.Day == item.Day && sr.Timming == item.Timming)
+                        {
+                            student.Remove(item);
+                            break;
+                        }
+                    }
+
+                }
+                sdr11.Close();
+                cmd11.Connection.Close();
                 return student;
-            }else
+            }
+            else
             {
                 string q = "select * from RequestTutor where Semail='" + temail + "' or Temail='" + semail + "' ";
                 List<StudentRequest> oddstudent = new List<StudentRequest>();
@@ -2683,13 +3756,46 @@ namespace MyWcfService1
                         }
                     }
                 }
+                string query12 = "select * from Reschedule";
+                SqlCommand cmd11 = new SqlCommand(query12, new SqlConnection(connectionString));
+                cmd11.Connection.Open();
+                SqlDataReader sdr11 = cmd11.ExecuteReader();
+                while (sdr11.Read())
+                {
+                    StudentRequest sr = new StudentRequest();
+                    sr.TEmail = sdr11["semail"].ToString();
+                    sr.Subject = sdr11["subject"].ToString();
+                    sr.Timming = sdr11["timmings"].ToString();
+                    sr.Day = sdr11["Day"].ToString();
+                    foreach (var item in student.ToList())
+                    {
+                        if (sr.TEmail == item.SEmail && sr.Day == item.Day && sr.Timming == item.Timming)
+                        {
+                            student.Remove(item);
+                            break;
+                        }
+                    }
+
+                }
+                sdr11.Close();
+                cmd11.Connection.Close();
                 return student;
             }
         }
 
         public CUD RescheduledClass(Rescheduled r)
         {
-            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day='" + r.Day + "' and [DayTimeMonth]='" + r.DateTimeToday + "'";
+            if (r.Type == "Student")
+            {
+                var email = r.SEmail;
+                r.SEmail = r.TuEmail;
+                r.TuEmail = email;
+            }else
+            {
+                r.SEmail = r.SEmail;
+                r.TuEmail = r.TuEmail;
+            }
+            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day!='"+r.Day+ "' and Startdate!='"+r.StartDate+"'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -2698,20 +3804,66 @@ namespace MyWcfService1
                 sdr.Close();
                 cmd.Connection.Close();
                 return new CUD { Reason = "Class Already Scheduled" };
-            }else
+            }
+            else
             {
                 sdr.Close();
                 cmd.Connection.Close();
+                if (r.EndDate==null)
+                {
+                    string status = "2";
+                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + ","+0+"'')";
+                    SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                    cmd1.Connection.Open();
+                    int x = cmd1.ExecuteNonQuery();
+                    cmd1.Connection.Close();
+                    return new CUD { Reason = "Class  Scheduled" };
+                } else
 
+                {
+                    string status = "2";
+                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "','"+0+"')";
+                    SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                    cmd1.Connection.Open();
+                    int x = cmd1.ExecuteNonQuery();
+                    cmd1.Connection.Close();
 
-                string status = "1";
-                string query = "insert into Reschedule values('"+r.SEmail+"','"+r.TuEmail+"','"+r.Timmings+"','"+r.Day+"','"+r.Subj+"','"+status+"','"+r.DateTimeToday+"')";
-                SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
-                cmd1.Connection.Open();
-                int x = cmd1.ExecuteNonQuery();
-                cmd1.Connection.Close();
-                return new CUD { Reason = "Class Rescheduled Done", rowEffected = x };
+                    var q1 = "update requesttutor set timming ='" + r.Timmings + "',day='" + r.Day + "' where semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and subject='" + r.Subj + "'";
+                    SqlCommand cmd2 = new SqlCommand(q1, new SqlConnection(connectionString));
+                    cmd2.Connection.Open();
+                    cmd2.ExecuteNonQuery();
+                    cmd.Connection.Close();
+                    return new CUD { Reason = "Class Rescheduled Done", rowEffected = x };
+                }
             }
+        }
+
+        public List<Rescheduled> Notifications(string Email)
+        {
+            List<Rescheduled> lstRes = new List<Rescheduled>();
+            string q = "select (select first_name+' '+last_name from tutor where email=temail) as name,timmings,temail,day,subject,[read],preday,pretimming,startdate,enddate from Reschedule where semail='"+Email+"' order by [Read] asc";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Rescheduled r = new Rescheduled();
+                r.Day = sdr["day"].ToString();
+                r.TuEmail = sdr["temail"].ToString();
+                r.Subj = sdr["subject"].ToString();
+                r.TuEmail = sdr["temail"].ToString();
+                r.preDay = sdr["preday"].ToString();
+                r.Timmings = sdr["timmings"].ToString();
+                r.prTimming = sdr["preTimming"].ToString();
+                r.StartDate = sdr["startDate"].ToString();
+                r.EndDate = sdr["endDate"].ToString();
+                r.Reason = sdr["Read"].ToString();
+                r.Name = sdr["name"].ToString();
+                lstRes.Add(r);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            return lstRes;
         }
     }
 }

@@ -447,6 +447,16 @@ namespace MyWcfService1
        )]
         CUD RescheduledClass(Rescheduled r);
 
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/Notifications/{Email}"
+       )]
+        List<Rescheduled> Notifications(string  Email);
+
         //HeldStudentClass
 
 
