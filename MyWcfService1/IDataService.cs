@@ -144,6 +144,16 @@ namespace MyWcfService1
            UriTemplate = "/StudentEnrollSub/{email}"
            )]
         List<Courses> StudentEnrollCourses(string email);
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/StudentFindTutor/{email}"
+           )]
+        List<Courses> StudentFindTutor(string email);
+
         [OperationContract]
         [WebInvoke(
            Method = "GET",

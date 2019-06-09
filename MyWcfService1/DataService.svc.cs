@@ -363,6 +363,45 @@ namespace MyWcfService1
             cmd.Connection.Close();
             return course;
         }
+
+
+        public List<Courses> StudentFindTutor(string email)
+        {
+            List<Courses> course = new List<Courses>();
+            string q = "select * from StudentCourses where Email='" + email + "'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                Courses c = new Courses();
+                c.CourseCode = sdr["CourseCode"].ToString();
+                c.Title = sdr["Email"].ToString();
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+
+            string query = "select * from RequestTutor where Semail='" + email + "' and Status=2";
+            SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+            cmd1.Connection.Open();
+            SqlDataReader sdr1 = cmd1.ExecuteReader();
+
+            while (sdr1.Read())
+            {
+                foreach (var item in course.ToList())
+                {
+                    if (sdr1["subject"].ToString() == item.CourseCode)
+                    {
+                        course.Remove(item);
+                    }
+                }
+
+            }
+            sdr1.Close();
+            cmd1.Connection.Close();
+            return course;
+        }
         public List<Courses> TutorEnrollCourses(string email)
         {
             List<Courses> course = new List<Courses>();
@@ -1186,7 +1225,8 @@ namespace MyWcfService1
                                     }
                                 }
                                 break;
-                            }else
+                            }
+                            else
                             {
                                 sc.T = "1";
                             }
@@ -2804,6 +2844,11 @@ namespace MyWcfService1
             cmd.Connection.Close();
             if (x == 1)
             {
+                string DeleteOtherSub = "delete  from RequestTutor where temail!='" + t.TuEmail + "' and [Status]=1 and subject='" + t.Subj + "' and semail='" + t.SEmail + "'";
+                SqlCommand cmd1 = new SqlCommand(DeleteOtherSub, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                cmd1.ExecuteNonQuery();
+                cmd1.Connection.Close();
                 return new CUD { Reason = t.SEmail + " Request Accept" };
             }
             else
@@ -2814,6 +2859,44 @@ namespace MyWcfService1
 
         public List<HeldClassess> TodayStudentClasses(string Email, string day, string datetimetoday)
         {
+
+            string quer = "select * from reschedule where endDate!='' and [Read]=0";
+            SqlCommand cmdd = new SqlCommand(quer, new SqlConnection(connectionString));
+            cmdd.Connection.Open();
+            SqlDataReader sdrr = cmdd.ExecuteReader();
+            while (sdrr.Read())
+            {
+                DateTime dbendDate = new DateTime(int.Parse(sdrr["endDate"].ToString().Split('-')[2].ToString()), int.Parse(sdrr["endDate"].ToString().Split('-')[1]), int.Parse(sdrr["endDate"].ToString().Split('-')[0]));
+                DateTime nowDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+                TimeSpan diffDays = dbendDate.Subtract(nowDate);
+                if (diffDays.TotalDays <= 0)
+                {
+                    //sdrr.Close();
+                    cmdd.Connection.Close();
+
+                    string qu = "update requesttutor set timming='" + sdrr["preTimming"] + "',day='" + sdrr["Preday"].ToString() + "' where day='" + sdrr["day"].ToString() + "' and timming='" + sdrr["timmings"].ToString() + "' and temail='" + Email + "' and subject='" + sdrr["subject"].ToString() + "'";
+                    SqlCommand cmds = new SqlCommand(qu, new SqlConnection(connectionString));
+                    cmds.Connection.Open();
+                    int x = cmds.ExecuteNonQuery();
+                    cmds.Connection.Close();
+                    if (x == 1)
+                    {
+                        string updateRes = "update reschedule set [Read]=1 where endDate='" + sdrr["endDate"].ToString() + "'";
+                        SqlCommand cmd12 = new SqlCommand(updateRes, new SqlConnection(connectionString));
+                        cmd12.Connection.Open();
+                        cmd12.ExecuteNonQuery();
+                        cmd12.Connection.Close();
+                    }
+                    cmdd.Connection.Open();
+                }
+                else
+                {
+                    Console.WriteLine("Greater");
+                }
+
+            }
+            sdrr.Close();
+            cmdd.Connection.Close();
             string q = "select (select Email from Student where Email=rt.SEmail) as StuEmail,(select btnStatus from HeldStuClass hs where hs.Semail=rt.SEmail and hs.Temail=rt.TEmail and hs.DayTimeMonth='" + datetimetoday + "' and hs.Timmings=rt.Timming and hs.[Day]=rt.[Day] and hs.[Subject]=rt.[Subject]) as bitStatus,(select First_Name+' '+Last_Name from Student where Email=rt.SEmail) as [fullname],[Day],[Subject],[Timming] from requesttutor rt where rt.TEmail='" + Email + "' and rt.[Day]='" + day + "' and rt.[Status]=2";
             List<HeldClassess> Hldcls = new List<HeldClassess>();
             List<HeldClassess> Hldclss = new List<HeldClassess>();
@@ -2840,7 +2923,7 @@ namespace MyWcfService1
                 sdr.Close();
                 cmd.Connection.Close();
 
-                string rescueQuery = "select * from HeldStuClass where temail='" + Email + "' and day='"+day+ "' and [DayTimeMonth]='"+datetimetoday+"'";
+                string rescueQuery = "select * from HeldStuClass where temail='" + Email + "' and day='" + day + "' and [DayTimeMonth]='" + datetimetoday + "'";
                 SqlCommand cmd3 = new SqlCommand(rescueQuery, new SqlConnection(connectionString));
                 cmd3.Connection.Open();
                 SqlDataReader sr = cmd3.ExecuteReader();
@@ -2857,7 +2940,24 @@ namespace MyWcfService1
                 }
                 sr.Close();
                 cmd3.Connection.Close();
-                string resQuery = "select  (select First_Name+' '+Last_Name from Student where Email=SEmail) as fullname,semail,subject,timmings,day from Reschedule where  TEmail='" + Email + "' and day='" + day + "' and StartDate='" + datetimetoday.Split('-')[0]+"-" + "0"+datetimetoday.Split('-')[1]+"-" + datetimetoday.Split('-')[2] + "'";
+                var datetime = "";
+                if (datetimetoday.Split('-')[0].Length != 2)
+                {
+                    datetime = "0" + datetimetoday.Split('-')[0] + "-";
+                }
+                else
+                {
+                    datetime = datetimetoday.Split('-')[0] + "-";
+                }
+                if (datetimetoday.Split('-')[1].Length != 2)
+                {
+                    datetime += "0" + datetimetoday.Split('-')[0] + "-" + datetimetoday.Split('-')[2];
+                }
+                else
+                {
+                    datetime += datetimetoday.Split('-')[0] + "-" + datetimetoday.Split('-')[2];
+                }
+                string resQuery = "select  (select First_Name+' '+Last_Name from Student where Email=SEmail) as fullname,semail,subject,timmings,day from Reschedule where  TEmail='" + Email + "' and day='" + day + "' and StartDate='" + datetime + "' and [Read]!=1";
                 SqlCommand cmd2 = new SqlCommand(resQuery, new SqlConnection(connectionString));
                 cmd2.Connection.Open();
                 SqlDataReader sdr1 = cmd2.ExecuteReader();
@@ -2880,7 +2980,7 @@ namespace MyWcfService1
                 {
                     foreach (var item1 in Hldclss.ToList())
                     {
-                        if(item.SEmail==item1.SEmail && item.TuEmail == item1.TuEmail && item.Timmings==item1.Timmings && item.DateTimeToday==item1.DateTimeToday && item.Day==item1.Day && item.Subj==item1.Subj)
+                        if (item.SEmail == item1.SEmail && item.TuEmail == item1.TuEmail && item.Timmings == item1.Timmings && item.DateTimeToday == item1.DateTimeToday && item.Day == item1.Day && item.Subj == item1.Subj)
                         {
                             item.status = "1";
                         }
@@ -2896,16 +2996,16 @@ namespace MyWcfService1
                 cmd.Connection.Close();
                 return Hldcls;
             }
-            
+
         }
 
         public CUD TutorHeldStudentClassses(HeldClassess t)
         {
-            if (t.status=="cancel")
+            if (t.status == "cancel")
             {
                 var startdate = DateTime.Now.ToShortDateString();
-                startdate=startdate.Replace('/', '-');
-                string q = "select PreTimming,PreDay,subject from Reschedule where temail='" + t.TuEmail + "' and timmings='" + t.Timmings + "' and subject='" + t.Subj + "' and enddate='' and startDate='"+startdate+"' ";
+                startdate = startdate.Replace('/', '-');
+                string q = "select PreTimming,PreDay,subject from Reschedule where temail='" + t.TuEmail + "' and timmings='" + t.Timmings + "' and subject='" + t.Subj + "' and enddate='' and startDate='" + startdate + "' ";
                 SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
                 cmd.Connection.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
@@ -2917,12 +3017,37 @@ namespace MyWcfService1
                     var PreTimming = sdr["PreTimming"].ToString();
                     sdr.Close();
                     cmd.Connection.Close();
-                    string query = "update [HeldStuClass] set [Timmings]='" + t.Timmings + "',day='" + t.Day + "',[HeldStatus]='held',[DayTimeMonth]='"+t.DateTimeToday+"' where temail='" + t.TuEmail + "' and semail='" + t.SEmail + "' and subject='" + t.Subj + "' and [Timmings]='" + PreTimming + "' and day='"+preday+"'";
+                    string query = "update [HeldStuClass] set [Timmings]='" + t.Timmings + "',day='" + t.Day + "',[HeldStatus]='held',[DayTimeMonth]='" + t.DateTimeToday + "' where temail='" + t.TuEmail + "' and semail='" + t.SEmail + "' and subject='" + t.Subj + "' and [Timmings]='" + PreTimming + "' and day='" + preday + "'";
                     SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                     cmd1.Connection.Open();
-                    cmd1.ExecuteNonQuery();
+                    int x = cmd1.ExecuteNonQuery();
 
                     cmd1.Connection.Close();
+                    if (x == 1)
+                    {
+                        var datetime = "";
+                        if (t.DateTimeToday.Split('-')[0].Length != 2)
+                        {
+                            datetime = "0" + t.DateTimeToday.Split('-')[0] + "-";
+                        }
+                        else
+                        {
+                            datetime = t.DateTimeToday.Split('-')[0] + "-";
+                        }
+                        if (t.DateTimeToday.Split('-')[1].Length != 2)
+                        {
+                            datetime += "0" + t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                        }
+                        else
+                        {
+                            datetime += t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                        }
+                        string updateRes = "update reschedule set [Read]=1 where StartDate='" + datetime + "' and enddate=''";
+                        SqlCommand cmd12 = new SqlCommand(updateRes, new SqlConnection(connectionString));
+                        cmd12.Connection.Open();
+                        cmd12.ExecuteNonQuery();
+                        cmd12.Connection.Close();
+                    }
 
                 }
                 else
@@ -2960,22 +3085,47 @@ namespace MyWcfService1
             //}
             //else
             //{
-                int x = 0;
-                string Held = "Cancl";
-                string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
-                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
-                cmd.Connection.Open();
-                x = cmd.ExecuteNonQuery();
+            int x = 0;
+            string Held = "Cancl";
+            string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            x = cmd.ExecuteNonQuery();
 
-                cmd.Connection.Close();
-                if (x == 1)
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                var datetime = "";
+                if (t.DateTimeToday.Split('-')[0].Length != 2)
                 {
-                    return new CUD { Reason = "Cancel Class", rowEffected = x };
+                    datetime = "0" + t.DateTimeToday.Split('-')[0] + "-";
                 }
                 else
                 {
-                    return new CUD { Reason = "Faild to cancel Class", rowEffected = x };
+                    datetime = t.DateTimeToday.Split('-')[0] + "-";
                 }
+                if (t.DateTimeToday.Split('-')[1].Length != 2)
+                {
+                    datetime += "0" + t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                }
+                else
+                {
+                    datetime += t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                }
+                if (t.status == "cancel")
+                {
+                    string updateRes = "update reschedule set [Read]=1 where StartDate='" +datetime  + "' and endDate=''";
+                    SqlCommand cmd2 = new SqlCommand(updateRes, new SqlConnection(connectionString));
+                    cmd2.Connection.Open();
+                    cmd2.ExecuteNonQuery();
+                    cmd2.Connection.Close();
+                }
+                return new CUD { Reason = "Cancel Class", rowEffected = x };
+            }
+            else
+            {
+                return new CUD { Reason = "Faild to cancel Class", rowEffected = x };
+            }
             //}
         }
 
@@ -3790,12 +3940,13 @@ namespace MyWcfService1
                 var email = r.SEmail;
                 r.SEmail = r.TuEmail;
                 r.TuEmail = email;
-            }else
+            }
+            else
             {
                 r.SEmail = r.SEmail;
                 r.TuEmail = r.TuEmail;
             }
-            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day!='"+r.Day+ "' and Startdate!='"+r.StartDate+"'";
+            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day!='" + r.Day + "' and Startdate!='" + r.StartDate + "'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -3809,20 +3960,21 @@ namespace MyWcfService1
             {
                 sdr.Close();
                 cmd.Connection.Close();
-                if (r.EndDate==null)
+                if (r.EndDate == null)
                 {
                     string status = "2";
-                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + ","+0+"'')";
+                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "," + 0 + "'')";
                     SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                     cmd1.Connection.Open();
                     int x = cmd1.ExecuteNonQuery();
                     cmd1.Connection.Close();
                     return new CUD { Reason = "Class  Scheduled" };
-                } else
+                }
+                else
 
                 {
                     string status = "2";
-                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "','"+0+"')";
+                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "','" + 0 + "')";
                     SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                     cmd1.Connection.Open();
                     int x = cmd1.ExecuteNonQuery();
@@ -3841,7 +3993,7 @@ namespace MyWcfService1
         public List<Rescheduled> Notifications(string Email)
         {
             List<Rescheduled> lstRes = new List<Rescheduled>();
-            string q = "select (select first_name+' '+last_name from tutor where email=temail) as name,timmings,temail,day,subject,[read],preday,pretimming,startdate,enddate from Reschedule where semail='"+Email+"' order by [Read] asc";
+            string q = "select (select first_name+' '+last_name from tutor where email=temail) as name,timmings,temail,day,subject,[read],preday,pretimming,startdate,enddate from Reschedule where semail='" + Email + "' order by [Read] asc";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
