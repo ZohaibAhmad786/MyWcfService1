@@ -7,5 +7,6 @@
         public string day { get; set; }
         public string tutorName { get; set; }
         public string tutorStatus { get; set; }
+        public string rating { get; set; }
     }
 }

@@ -674,6 +674,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -704,7 +705,38 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
         }
 
         public List<Days> Tuesday(string email, string sub)
@@ -727,6 +759,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -758,7 +791,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Days> Wednesday(string email, string sub)
@@ -782,6 +847,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -813,7 +879,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Days> Thursday(string email, string sub)
@@ -836,6 +934,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -867,7 +966,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Days> Friday(string email, string sub)
@@ -890,6 +1021,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -921,7 +1053,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Days> Saturday(string email, string sub)
@@ -944,6 +1108,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -975,7 +1140,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Days> Sunday(string email, string sub)
@@ -998,6 +1195,7 @@ namespace MyWcfService1
                     d.Timming = sdr["Timming"].ToString();
                     d.Email = sdr["Email"].ToString();
                     d.tutorStatus = sdr["tutorStatus"].ToString();
+                    d.rating = "0";
                     days.Add(d);
                 }
             }
@@ -1029,7 +1227,39 @@ namespace MyWcfService1
                     }
                 }
             }
-            return days;
+            string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+            SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+            cmdrating.Connection.Open();
+            List<Days> ratingdays = new List<Days>();
+            SqlDataReader sdrrating = cmdrating.ExecuteReader();
+            while (sdrrating.Read())
+            {
+                Days d = new Days();
+                d.Email = sdrrating["temail"].ToString();
+                float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                d.rating = (SumRAting / totalRating).ToString();
+
+                ratingdays.Add(d);
+            }
+            sdrrating.Close();
+            cmdrating.Connection.Close();
+            foreach (var item in days.ToList())
+            {
+                foreach (var item1 in ratingdays.ToList())
+                {
+                    if (item.Email == item1.Email)
+                    {
+                        item.rating = item1.rating;
+                    }
+                    else
+                    {
+                        item.rating = "0";
+                    }
+                }
+            }
+            return days.OrderByDescending(d => d.rating).ToList();
+            //return days;
         }
 
         public List<Schedual> GetStudentSche(string email)
@@ -1076,7 +1306,7 @@ namespace MyWcfService1
             }
             sdrr.Close();
             cmdd.Connection.Close();
-            string q = "select * from RequestTutor where semail='" + email + "'";
+            string q = "select * from RequestTutor where status=2 and semail='" + email + "'";
             List<Schedual> schedual1 = new List<Schedual>();
             SqlCommand cmd2 = new SqlCommand(q, new SqlConnection(connectionString));
             cmd2.Connection.Open();
@@ -1658,7 +1888,7 @@ namespace MyWcfService1
             }
             sdrr.Close();
             cmdd.Connection.Close();
-            string q = "select * from RequestTutor where temail='" + email + "'";
+            string q = "select * from RequestTutor where status =2 and temail='" + email + "'";
             List<Schedual> schedual1 = new List<Schedual>();
             SqlCommand cmd2 = new SqlCommand(q, new SqlConnection(connectionString));
             cmd2.Connection.Open();
@@ -2616,63 +2846,44 @@ namespace MyWcfService1
             //string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Temail='"+t.TuEmail+"' and Day='"+t.Day+"'";// only day has added if error Remove day only from This function..
             //string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and subject='"+t.Subj+"'";//to get all student request which are want to study same subject at same time...
             //string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and subject='" + t.Subj + "' and Semail!='"+t.SEmail+"'";
-            string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and Semail='" + t.SEmail + "'";
-            SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(connectionString));
-            cmd1.Connection.Open();
-            SqlDataReader sdr = cmd1.ExecuteReader();
-            if (sdr.HasRows)
+            int limit = 0;
+            string limitReq = "select count(*) as totalrequest from RequestTutor where day='" + t.Day + "' and status=1 and semail='"+t.SEmail+"'";
+            SqlCommand lcmd = new SqlCommand(limitReq, new SqlConnection(connectionString));
+            lcmd.Connection.Open();
+            SqlDataReader sdrlim = lcmd.ExecuteReader();
+            if (sdrlim.HasRows)
             {
-                cmd1.Connection.Close();
-                sdr.Close();
-                return new CUD { rowEffected = x, Reason = "Your Request Already Submitted to another Tutor" };
+                sdrlim.Read();
+                limit = int.Parse(sdrlim["totalrequest"].ToString());
             }
-            else
+            sdrlim.Close();
+            lcmd.Connection.Close();
+            if (limit <= 2)
             {
-                cmd1.Connection.Close();
-                sdr.Close();
-                var query1 = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and Temail='" + t.TuEmail + "' and subject='" + t.Subj + "'";
-                SqlCommand cmd2 = new SqlCommand(query1, new SqlConnection(connectionString));
-                cmd2.Connection.Open();
-                SqlDataReader sdr1 = cmd2.ExecuteReader();
-                if (sdr1.HasRows)
+                string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and Semail='" + t.SEmail + "'";
+                SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                SqlDataReader sdr = cmd1.ExecuteReader();
+                if (sdr.HasRows)
                 {
-                    cmd2.Connection.Close();
-                    sdr1.Close();
-                    string query = "insert into RequestTutor values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Subj + "','" + t.Day + "','" + 1 + "')";
-                    SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
-                    cmd.Connection.Open();
-
-                    x = cmd.ExecuteNonQuery();
-                    cmd.Connection.Close();
-                    if (x == 1)
-                    {
-                        return new CUD { rowEffected = x, Reason = "Request Submitted" };
-                    }
-                    else
-                    {
-                        return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
-                    }
+                    cmd1.Connection.Close();
+                    sdr.Close();
+                    return new CUD { rowEffected = x, Reason = "Your Request Already Submitted to another Tutor" };
                 }
                 else
                 {
-                    cmd2.Connection.Close();
-                    sdr1.Close();
-                    var query = "select * from RequestTutor where Timming = '" + t.Timmings + "' and Day = '" + t.Day + "' and Temail = '" + t.TuEmail + "'";
-                    SqlCommand cmd3 = new SqlCommand(query, new SqlConnection(connectionString));
-                    cmd3.Connection.Open();
-                    SqlDataReader sdr2 = cmd3.ExecuteReader();
-                    if (sdr2.HasRows)
+                    cmd1.Connection.Close();
+                    sdr.Close();
+                    var query1 = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and Temail='" + t.TuEmail + "' and subject='" + t.Subj + "'";
+                    SqlCommand cmd2 = new SqlCommand(query1, new SqlConnection(connectionString));
+                    cmd2.Connection.Open();
+                    SqlDataReader sdr1 = cmd2.ExecuteReader();
+                    if (sdr1.HasRows)
                     {
-                        cmd3.Connection.Close();
-                        sdr2.Close();
-                        return new CUD { rowEffected = x, Reason = "Tutor is Busy" };
-                    }
-                    else
-                    {
-                        cmd3.Connection.Close();
-                        sdr2.Close();
-                        string query3 = "insert into RequestTutor values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Subj + "','" + t.Day + "','" + 1 + "')";
-                        SqlCommand cmd = new SqlCommand(query3, new SqlConnection(connectionString));
+                        cmd2.Connection.Close();
+                        sdr1.Close();
+                        string query = "insert into RequestTutor values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Subj + "','" + t.Day + "','" + 1 + "')";
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
                         cmd.Connection.Open();
 
                         x = cmd.ExecuteNonQuery();
@@ -2686,9 +2897,46 @@ namespace MyWcfService1
                             return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
                         }
                     }
+                    else
+                    {
+                        cmd2.Connection.Close();
+                        sdr1.Close();
+                        var query = "select * from RequestTutor where Timming = '" + t.Timmings + "' and Day = '" + t.Day + "' and Temail = '" + t.TuEmail + "'";
+                        SqlCommand cmd3 = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd3.Connection.Open();
+                        SqlDataReader sdr2 = cmd3.ExecuteReader();
+                        if (sdr2.HasRows)
+                        {
+                            cmd3.Connection.Close();
+                            sdr2.Close();
+                            return new CUD { rowEffected = x, Reason = "Tutor is Busy" };
+                        }
+                        else
+                        {
+                            cmd3.Connection.Close();
+                            sdr2.Close();
+                            string query3 = "insert into RequestTutor values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Subj + "','" + t.Day + "','" + 1 + "')";
+                            SqlCommand cmd = new SqlCommand(query3, new SqlConnection(connectionString));
+                            cmd.Connection.Open();
+
+                            x = cmd.ExecuteNonQuery();
+                            cmd.Connection.Close();
+                            if (x == 1)
+                            {
+                                return new CUD { rowEffected = x, Reason = "Request Submitted" };
+                            }
+                            else
+                            {
+                                return new CUD { rowEffected = x, Reason = "Faild to Send Request" };
+                            }
+                        }
+
+                    }
 
                 }
-
+            }else
+            {
+                return new CUD { rowEffected = x, Reason = "Request limit Exceeds than 2 in single day" };
             }
 
 
@@ -2951,11 +3199,11 @@ namespace MyWcfService1
                 }
                 if (datetimetoday.Split('-')[1].Length != 2)
                 {
-                    datetime += "0" + datetimetoday.Split('-')[0] + "-" + datetimetoday.Split('-')[2];
+                    datetime += "0" + datetimetoday.Split('-')[1] + "-" + datetimetoday.Split('-')[2];
                 }
                 else
                 {
-                    datetime += datetimetoday.Split('-')[0] + "-" + datetimetoday.Split('-')[2];
+                    datetime += datetimetoday.Split('-')[1] + "-" + datetimetoday.Split('-')[2];
                 }
                 string resQuery = "select  (select First_Name+' '+Last_Name from Student where Email=SEmail) as fullname,semail,subject,timmings,day from Reschedule where  TEmail='" + Email + "' and day='" + day + "' and StartDate='" + datetime + "' and [Read]!=1";
                 SqlCommand cmd2 = new SqlCommand(resQuery, new SqlConnection(connectionString));
@@ -2999,13 +3247,16 @@ namespace MyWcfService1
 
         }
 
-        public CUD TutorHeldStudentClassses(HeldClassess t)
+        public CUD TutorHeldStudentClassses(List<Topics> t)
         {
-            if (t.status == "cancel")
+            
+
+            if (t[0].status == "cancel")
             {
                 var startdate = DateTime.Now.ToShortDateString();
                 startdate = startdate.Replace('/', '-');
-                string q = "select PreTimming,PreDay,subject from Reschedule where temail='" + t.TuEmail + "' and timmings='" + t.Timmings + "' and subject='" + t.Subj + "' and enddate='' and startDate='" + startdate + "' ";
+
+                string q = "select PreTimming,PreDay,subject from Reschedule where temail='" + t[0].TuEmail + "' and timmings='" + t[0].timming + "' and subject='" + t[0].subject + "' and enddate='' and startDate='" + startdate + "' ";
                 SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
                 cmd.Connection.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
@@ -3017,7 +3268,7 @@ namespace MyWcfService1
                     var PreTimming = sdr["PreTimming"].ToString();
                     sdr.Close();
                     cmd.Connection.Close();
-                    string query = "update [HeldStuClass] set [Timmings]='" + t.Timmings + "',day='" + t.Day + "',[HeldStatus]='held',[DayTimeMonth]='" + t.DateTimeToday + "' where temail='" + t.TuEmail + "' and semail='" + t.SEmail + "' and subject='" + t.Subj + "' and [Timmings]='" + PreTimming + "' and day='" + preday + "'";
+                    string query = "update [HeldStuClass] set [Timmings]='" + t[0].timming + "',day='" + t[0].day + "',[HeldStatus]='held',[DayTimeMonth]='" + t[0].datetimetoday + "' where temail='" + t[0].TuEmail + "' and semail='" + t[0].semail + "' and subject='" + t[0].subject + "' and [Timmings]='" + PreTimming + "' and day='" + preday + "'";
                     SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                     cmd1.Connection.Open();
                     int x = cmd1.ExecuteNonQuery();
@@ -3026,27 +3277,46 @@ namespace MyWcfService1
                     if (x == 1)
                     {
                         var datetime = "";
-                        if (t.DateTimeToday.Split('-')[0].Length != 2)
+                        if (t[0].datetimetoday.Split('-')[0].Length != 2)
                         {
-                            datetime = "0" + t.DateTimeToday.Split('-')[0] + "-";
+                            datetime = "0" + t[0].datetimetoday.Split('-')[0] + "-";
                         }
                         else
                         {
-                            datetime = t.DateTimeToday.Split('-')[0] + "-";
+                            datetime = t[0].datetimetoday.Split('-')[0] + "-";
                         }
-                        if (t.DateTimeToday.Split('-')[1].Length != 2)
+                        if (t[0].datetimetoday.Split('-')[1].Length != 2)
                         {
-                            datetime += "0" + t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                            datetime += "0" + t[0].datetimetoday.Split('-')[1] + "-" + t[0].datetimetoday.Split('-')[2];
                         }
                         else
                         {
-                            datetime += t.DateTimeToday.Split('-')[0] + "-" + t.DateTimeToday.Split('-')[2];
+                            datetime += t[0].datetimetoday.Split('-')[1] + "-" + t[0].datetimetoday.Split('-')[2];
                         }
                         string updateRes = "update reschedule set [Read]=1 where StartDate='" + datetime + "' and enddate=''";
                         SqlCommand cmd12 = new SqlCommand(updateRes, new SqlConnection(connectionString));
                         cmd12.Connection.Open();
                         cmd12.ExecuteNonQuery();
                         cmd12.Connection.Close();
+                        foreach (var item in t.ToList())
+                        {
+                            foreach (var item1 in item.subtopics.ToList())
+                            {
+                                string LessonInsert = "insert into CompletedLessons values('" + item.maintopics + "','" + item1.semail + "','" + item1.topicstatus + "','" + t[0].semail + "','" + t[0].TuEmail + "','" + t[0].subject + "','" + t[0].timming + "','" + t[0].datetimetoday + "','" + t[0].day + "') ";
+                                SqlCommand c = new SqlCommand(LessonInsert, new SqlConnection(connectionString));
+                                c.Connection.Open();
+                                int x1 = c.ExecuteNonQuery();
+                                c.Connection.Close();
+                                if (x1 == 1)
+                                {
+                                    return new CUD { Reason = "Held Class", rowEffected = x };
+                                }
+                                else
+                                {
+                                    return new CUD { Reason = "Faild to Held Class", rowEffected = x };
+                                }
+                            }
+                        }
                     }
 
                 }
@@ -3061,7 +3331,7 @@ namespace MyWcfService1
             {
                 int x = 0;
                 string Held = "Held";
-                string q = "insert into HeldStuClass values('" + t.SEmail + "','" + t.TuEmail + "','" + t.Timmings + "','" + t.Day + "','" + t.Subj + "','" + Held.ToString() + "','" + t.DateTimeToday + "','" + 1 + "')";
+                string q = "insert into HeldStuClass values('" + t[0].semail + "','" + t[0].TuEmail + "','" + t[0].timming + "','" + t[0].day + "','" + t[0].subject + "','" + Held.ToString() + "','" + t[0].datetimetoday + "','" + 1 + "')";
                 SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
                 cmd.Connection.Open();
                 x = cmd.ExecuteNonQuery();
@@ -3069,6 +3339,24 @@ namespace MyWcfService1
                 cmd.Connection.Close();
                 if (x == 1)
                 {
+                    foreach (var item in t.ToList())
+                    {
+                        foreach (var item1 in item.subtopics.ToList())
+                        {
+                            string LessonInsert = "insert into CompletedLessons values('"+item.maintopics+"','"+item1.semail+"','"+item1.topicstatus+"','"+t[0].semail+"','"+t[0].TuEmail+"','"+t[0].subject+"','"+t[0].timming+"','"+t[0].datetimetoday+"','"+t[0].day+"') ";
+                            SqlCommand c = new SqlCommand(LessonInsert, new SqlConnection(connectionString));
+                            c.Connection.Open();
+                            int x2 = c.ExecuteNonQuery();
+                            c.Connection.Close();
+                            //if (x2 == 1)
+                            //{
+                            //    return new CUD { Reason = "Held Class", rowEffected = x };
+                            //}else
+                            //{
+                            //    return new CUD { Reason = "Faild to Held Class", rowEffected = x };
+                            //}
+                        }
+                    }
                     return new CUD { Reason = "Held Class", rowEffected = x };
                 }
                 else
@@ -3076,6 +3364,7 @@ namespace MyWcfService1
                     return new CUD { Reason = "Faild to Held Class", rowEffected = x };
                 }
             }
+            //return new CUD { Reason = "asda" };
         }
         public CUD TutorCancelStudentClassses(HeldClassess t)
         {
@@ -3114,7 +3403,7 @@ namespace MyWcfService1
                 }
                 if (t.status == "cancel")
                 {
-                    string updateRes = "update reschedule set [Read]=1 where StartDate='" +datetime  + "' and endDate=''";
+                    string updateRes = "update reschedule set [Read]=1 where StartDate='" + datetime + "' and endDate=''";
                     SqlCommand cmd2 = new SqlCommand(updateRes, new SqlConnection(connectionString));
                     cmd2.Connection.Open();
                     cmd2.ExecuteNonQuery();
@@ -3261,7 +3550,7 @@ namespace MyWcfService1
         public List<toTutorRequest> StudentTimeTable(string Email)
         {
             List<toTutorRequest> obj = new List<toTutorRequest>();
-            var Query = "select(select First_Name + ' ' + Last_Name from Tutor where Email = Temail) as FullName,(select First_Name + ' ' + Last_Name from Student where Email = semail) as FullName1,Timming,Subject,Day,Temail,semail from RequestTutor where Semail = '" + Email + "' or temail = '" + Email + "' and status=2 order by Day desc";
+            var Query = "select(select First_Name + ' ' + Last_Name from Tutor where Email = Temail) as FullName,(select First_Name + ' ' + Last_Name from Student where Email = semail) as FullName1,Timming,Subject,Day,Temail,semail from RequestTutor where status =2 and  Semail = '" + Email + "' or temail = '" + Email + "'  order by Day desc";
             SqlCommand cmd = new SqlCommand(Query, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -3538,7 +3827,7 @@ namespace MyWcfService1
                 }
                 sdr.Close();
                 cmd.Connection.Close();
-                string query = "select * from Reschedule where endDate=''";
+                string query = "select * from Reschedule where endDate=''  and [Read]=0";
                 SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                 cmd1.Connection.Open();
                 SqlDataReader sdr1 = cmd1.ExecuteReader();
@@ -3583,7 +3872,7 @@ namespace MyWcfService1
                 }
                 sdr.Close();
                 cmd.Connection.Close();
-                string query = "select * from Reschedule where endDate=''";
+                string query = "select * from Reschedule where endDate='' and [Read]=0";
                 SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
                 cmd1.Connection.Open();
                 SqlDataReader sdr1 = cmd1.ExecuteReader();
@@ -3946,7 +4235,8 @@ namespace MyWcfService1
                 r.SEmail = r.SEmail;
                 r.TuEmail = r.TuEmail;
             }
-            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day!='" + r.Day + "' and Startdate!='" + r.StartDate + "'";
+            //string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day!='" + r.Day + "' and Startdate!='" + r.StartDate + "'";
+            string q = "select * from Reschedule where Timmings='" + r.Timmings + "' and semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and day='" + r.Day + "' and Startdate='" + r.StartDate + "'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -3962,13 +4252,41 @@ namespace MyWcfService1
                 cmd.Connection.Close();
                 if (r.EndDate == null)
                 {
-                    string status = "2";
-                    string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "," + 0 + "'')";
-                    SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
-                    cmd1.Connection.Open();
-                    int x = cmd1.ExecuteNonQuery();
-                    cmd1.Connection.Close();
-                    return new CUD { Reason = "Class  Scheduled" };
+                    string checkQuery = "select * from Reschedule where semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and timmings='" + r.prTimming + "' and subject='" + r.Subj + "' and day='" + r.preDay + "' and startDate='" + DateTime.Now.ToShortDateString().Replace('/', '-') + "'";
+                    SqlCommand cmd3 = new SqlCommand(checkQuery, new SqlConnection(connectionString));
+                    cmd3.Connection.Open();
+                    SqlDataReader sdr2 = cmd3.ExecuteReader();
+                    if (sdr2.HasRows)
+                    {
+                        sdr2.Read();
+                        cmd3.Connection.Close();
+                        string updateQuery = "update Reschedule set timmings='" + r.Timmings + "', day='" + r.Day + "',subject='" + r.Subj + "',startDate='" + r.StartDate + "' where semail='" + r.SEmail + "' and temail='" + r.TuEmail + "' and timmings='"+r.prTimming+"' and day='"+r.preDay+"' and startDate='"+ DateTime.Now.ToShortDateString().Replace('/', '-') + "'and  endDate='' and [Read]=0";
+                        SqlCommand cmd2 = new SqlCommand(updateQuery, new SqlConnection(connectionString));
+                        cmd2.Connection.Open();
+                        int x = cmd2.ExecuteNonQuery();
+                        cmd2.Connection.Close();
+                        if (x == 1)
+                        {
+                            return new CUD { Reason = "Class  Scheduled" };
+                        }
+                        else
+                        {
+                            return new CUD { Reason = "Class Failed to Scheduled" };
+                        }
+                    }
+                    else
+                    {
+                        sdr2.Close();
+                        cmd3.Connection.Close();
+                        string status = "2";
+                        string query = "insert into Reschedule values('" + r.SEmail + "','" + r.TuEmail + "','" + r.Timmings + "','" + r.Day + "','" + r.Subj + "','" + status + "','" + r.preDay + "','" + r.prTimming + "','" + r.StartDate + "','" + r.EndDate + "','" + 0 + "')";
+                        SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        int x = cmd1.ExecuteNonQuery();
+                        cmd1.Connection.Close();
+                        return new CUD { Reason = "Class  Scheduled" };
+                    }
+
                 }
                 else
 
@@ -4008,14 +4326,258 @@ namespace MyWcfService1
                 r.Timmings = sdr["timmings"].ToString();
                 r.prTimming = sdr["preTimming"].ToString();
                 r.StartDate = sdr["startDate"].ToString();
-                r.EndDate = sdr["endDate"].ToString();
+                if (sdr["endDate"].ToString() == "")
+                {
+                    r.EndDate = sdr["startDate"].ToString();
+                }else
+                {
+                    r.EndDate = sdr["endDate"].ToString();
+                }
                 r.Reason = sdr["Read"].ToString();
                 r.Name = sdr["name"].ToString();
+                r.status = "Reschedule";
                 lstRes.Add(r);
             }
             sdr.Close();
             cmd.Connection.Close();
+            string querydiscar = "select (select first_name+' '+last_name from tutor where email=temail) as name,SEmail,TEmail,Rating,DiscardStatus,subject,DateTimeDay from [discardStu] where semail='" + Email + "'";
+            SqlCommand cmd2 = new SqlCommand(querydiscar, new SqlConnection(connectionString));
+            cmd2.Connection.Open();
+            SqlDataReader sdr2 = cmd2.ExecuteReader();
+            while (sdr2.Read())
+            {
+                Rescheduled r = new Rescheduled();
+                r.Name = sdr2["name"].ToString();
+                r.TuEmail = sdr2["TEmail"].ToString();
+                r.status = "Discard";
+                r.Subj = sdr2["subject"].ToString();
+                r.DateTimeToday = sdr2["DateTimeDay"].ToString();
+
+                if (sdr2["DiscardStatus"].ToString() == "non")
+                {
+                    r.Reason = "False";
+                }
+                else
+                {
+                    r.Reason = "True";
+                }
+                lstRes.Add(r);
+            }
+            sdr2.Close();
+            cmd2.Connection.Close();
             return lstRes;
+        }
+        public List<toTutorRequest> TutororStudents(string Email)
+        {
+            List<toTutorRequest> tutorReq = new List<toTutorRequest>();
+            string query = "select distinct subject ,(select Student.First_Name+' '+Student.Last_Name  from Student where Email=RequestTutor.Semail) as [fullname],Temail, (select Tutor.First_Name+' '+Tutor.Last_Name  from Tutor where Email=RequestTutor.TEmail) as [fullname1],SEmail,Temail from RequestTutor where status=2 and TEmail='" + Email + "' or Semail='" + Email + "'";
+            SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                while (sdr.Read())
+                {
+                    toTutorRequest t = new toTutorRequest();
+                    if (Email == sdr["Semail"].ToString())
+                    {
+                        t.SEmail = sdr["Semail"].ToString();
+                        t.Subj = sdr["subject"].ToString();
+                        //t.Timmings = sdr["timming"].ToString();
+                        //t.Day = sdr["Day"].ToString();
+                        t.Name = sdr["fullname1"].ToString();
+                        t.TuEmail = sdr["temail"].ToString();
+                    }
+                    else
+                    {
+                        t.SEmail = sdr["semail"].ToString();
+                        t.Subj = sdr["subject"].ToString();
+                        //t.Timmings = sdr["timming"].ToString();
+                        //t.Day = sdr["Day"].ToString();
+                        t.Name = sdr["fullname"].ToString();
+                        t.TuEmail = sdr["temail"].ToString();
+                    }
+                    tutorReq.Add(t);
+                }
+
+                sdr.Close();
+                cmd.Connection.Close();
+                string q = "select * from discardStu where temail ='" + Email + "' or Semail='" + Email + "'";
+                SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                SqlDataReader sdr1 = cmd1.ExecuteReader();
+                while (sdr1.Read())
+                {
+                    foreach (var item in tutorReq.ToList())
+                    {
+                        if (item.SEmail == sdr1["semail"].ToString() && item.TuEmail == sdr1["temail"].ToString() && item.Subj == sdr1["Subject"].ToString())
+                        {
+                            tutorReq.Remove(item);
+                        }
+                    }
+                }
+                sdr.Close();
+                cmd1.Connection.Close();
+                return tutorReq;
+            }
+            else
+            {
+                return new List<toTutorRequest> { new toTutorRequest { Reason = "You Have No Student" } };
+            }
+        }
+        public CUD SubmitRating(string TEmail, string SEmail, string subject)
+        {
+            float rating = 0f;
+            string disstatus = "non";
+            var dateTime = DateTime.Now.ToShortDateString().Replace('/', '-');
+            string q = "insert into discardStu values('" + SEmail + "','" + TEmail + "','" + rating + "','" + disstatus + "','" + subject + "','" + dateTime + "')";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            int x = cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { Reason = "Discarded Student" };
+                //delete student subject from 
+            }
+            else
+            {
+                return new CUD { Reason = "Faild to Discard Student" };
+            }
+
+        }
+        public CUD GetRating(Rescheduled ttr)
+        {
+            string update = "update discardStu set rating='" + float.Parse(ttr.status) + "' , DiscardStatus='Approved' where subject ='" + ttr.Subj + "' and temail='" + ttr.TuEmail + "' and semail='" + ttr.SEmail + "' and DateTimeDay='" + ttr.DateTimeToday + "'";
+            SqlCommand cmd = new SqlCommand(update, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            int x = cmd.ExecuteNonQuery();
+            cmd.Connection.Close();
+            if (x == 1)
+            {
+                return new CUD { Reason = "Rating Submitted" };
+            }
+            else
+            {
+                return new CUD { Reason = "Rating Failed" };
+            }
+        }
+        public List<Topics> Lessons(string email,string sub)
+        {
+            int counter = 0;
+            List<Topics> tp = new List<Topics>();
+            string q = "select * from CourseTopics where couseTitle='" + sub + "' order by maintopics asc";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                List<Topics> thp = new List<Topics>();
+                Topics t = new Topics();
+                t.subject = sdr["cousetitle"].ToString();
+                t.maintopics = sdr["maintopics"].ToString();
+                t.id = int.Parse(sdr["courseid"].ToString());
+               
+                var sss = sdr["subtopics"].ToString();
+               
+               
+                foreach (var item in sdr["subtopics"].ToString().Split(','))
+                {
+                    Topics tt = new Topics();
+                    tt.semail = item;
+                    thp.Add(tt);
+                }
+                t.subtopics = thp;
+                tp.Add(t);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+
+            List<Topics> stp = new List<Topics>();
+            string heldClassTopics = "select * from CompletedLessons where semail='" + email + "' and subj='" + sub + "'";
+
+
+
+            //string heldClassTopics = "select * from extra";
+            SqlCommand cmd1 = new SqlCommand(heldClassTopics, new SqlConnection(connectionString));
+
+            cmd1.Connection.Open();
+            SqlDataReader sdr1 = cmd1.ExecuteReader();
+            if (sdr1.HasRows)
+            {
+                while (sdr1.Read())
+                {
+                    Topics s = new Topics();
+                    s.maintopics = sdr1["LMtopic"].ToString();
+                    var sss = sdr1["LSubTopic"].ToString();
+                    foreach (var item in tp.ToList())
+                    {
+
+                        var x = item.subtopics.Find(d => d.semail == sdr1["LSubTopic"].ToString());
+                        if (s.maintopics == item.maintopics && sdr1["TopicStatus"].ToString() == "1" && x.semail == sdr1["LSubTopic"].ToString())
+                        {
+                            item.subtopics.Remove(x);
+                            counter = item.id;
+                            if (item.subtopics.Count == 0)
+                            {
+
+                                tp.Remove(item);
+                            }
+                        }
+                    }
+                }
+                counter++;
+            }
+            else
+            {
+                counter = 1;
+            }
+
+            //string heldClassTopics = "select * from extra";
+            //SqlCommand cmd1 = new SqlCommand(heldClassTopics, new SqlConnection(connectionString));
+
+            //cmd1.Connection.Open();
+            //SqlDataReader sdr1 = cmd1.ExecuteReader();
+            //if (sdr1.HasRows)
+            //{
+            //    while (sdr1.Read())
+            //    {
+            //        Topics s = new Topics();
+            //        s.maintopics = sdr1["mtp"].ToString();
+            //        var sss = sdr1["stp"].ToString();
+            //        foreach (var item in tp.ToList())
+            //        {
+
+            //            var x = item.subtopics.Find(d => d.semail == sdr1["stp"].ToString());
+            //            if (s.maintopics == item.maintopics && sdr1["stps"].ToString() == "1" && x.semail == sdr1["stp"].ToString())
+            //            {
+            //                item.subtopics.Remove(x);
+            //                counter = item.id;
+            //                if (item.subtopics.Count == 0)
+            //                {
+
+            //                    tp.Remove(item);
+            //                }
+            //            }
+            //        }
+            //    }
+            //    counter++;
+            //}
+            //else
+            //{
+            //    counter = 1;
+            //}
+            sdr1.Close();
+            cmd1.Connection.Close();
+
+            if (counter == 1)
+            {
+                return tp.Take(1).ToList();
+            }
+            else
+            {
+                return tp.Where(d => d.id <= counter).ToList();
+            }
         }
     }
 }

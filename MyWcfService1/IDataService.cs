@@ -339,7 +339,7 @@ namespace MyWcfService1
         ResponseFormat = WebMessageFormat.Json,
         UriTemplate = "/HeldStudentClass"
         )]
-        CUD TutorHeldStudentClassses(HeldClassess t);
+        CUD TutorHeldStudentClassses(List<Topics> t);
 
         [OperationContract]
         [WebInvoke(
@@ -436,7 +436,7 @@ namespace MyWcfService1
        ResponseFormat = WebMessageFormat.Json,
        UriTemplate = "/CancelClasses/{email}/{type}"
        )]
-        List<StudentRequest> CancelClasses(string email,string type);
+        List<StudentRequest> CancelClasses(string email, string type);
 
         [OperationContract]
         [WebInvoke(
@@ -445,7 +445,7 @@ namespace MyWcfService1
        ResponseFormat = WebMessageFormat.Json,
        UriTemplate = "/FreeSlotes/{temail}/{semail}/{type}"
        )]
-        List<StudentRequest> FreeSlotes(string temail, string semail,string type);
+        List<StudentRequest> FreeSlotes(string temail, string semail, string type);
 
 
         [OperationContract]
@@ -465,9 +465,45 @@ namespace MyWcfService1
        ResponseFormat = WebMessageFormat.Json,
        UriTemplate = "/Notifications/{Email}"
        )]
-        List<Rescheduled> Notifications(string  Email);
+        List<Rescheduled> Notifications(string Email);
 
-        //HeldStudentClass
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/TutororStudents/{Email}"
+       )]
+        List<toTutorRequest> TutororStudents(string Email);
+
+        //SubmitRating
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/SubmitRating/{TEmail}/{SEmail}/{subject}"
+       )]
+        CUD SubmitRating(string TEmail,string SEmail,string subject);
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "POST",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/GetRating"
+       )]
+        CUD GetRating(Rescheduled ttr);
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/Lessons/{email}/{sub}"
+       )]
+        List<Topics> Lessons(string email,string sub);
 
 
     }

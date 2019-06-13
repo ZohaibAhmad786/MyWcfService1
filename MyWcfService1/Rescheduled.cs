@@ -16,5 +16,6 @@
         public string EndDate { get; set; }
         public string prTimming { get; set; }
         public string Type { get; set; }
+       
     }
 }
