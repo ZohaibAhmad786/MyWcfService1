@@ -506,6 +506,25 @@ namespace MyWcfService1
         List<Topics> Lessons(string email,string sub);
 
 
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/Students"
+       )]
+        List<Student> Students();
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/Tutors"
+       )]
+        List<Tutor> Tutors();
+
+
     }
 }
 
