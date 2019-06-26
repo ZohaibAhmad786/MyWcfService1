@@ -122,9 +122,9 @@ namespace MyWcfService1
            Method = "GET",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Json,
-           UriTemplate = "/AddStudentCourses/{Course}/{email}"
+           UriTemplate = "/AddStudentCourses/{Course}/{email}/{slots}"
            )]
-        CUD StudentCourses(string Course, string email);
+        CUD StudentCourses(string Course, string email,string slots);
 
         [OperationContract]
         [WebInvoke(
@@ -162,6 +162,15 @@ namespace MyWcfService1
            UriTemplate = "/TutorEnrollSub/{email}"
            )]
         List<Courses> TutorEnrollCourses(string email);
+
+        [OperationContract]
+        [WebInvoke(
+           Method = "GET",
+           RequestFormat = WebMessageFormat.Json,
+           ResponseFormat = WebMessageFormat.Json,
+           UriTemplate = "/FindTutorPerDays/{email}/{sub}/{days}"
+           )]
+        List<Days> FindTutorPerDays(string email,string sub,string days);
 
 
 
@@ -523,6 +532,16 @@ namespace MyWcfService1
        UriTemplate = "/Tutors"
        )]
         List<Tutor> Tutors();
+
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/SlotStudy/{email}"
+       )]
+        List<Courses> SlotStudy(string email);
 
 
     }

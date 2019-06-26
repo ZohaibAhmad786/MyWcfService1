@@ -314,11 +314,12 @@ namespace MyWcfService1
             System.Diagnostics.Debug.WriteLine(x, b);
         }
 
-        public CUD StudentCourses(string Course, string email)
+        public CUD StudentCourses(string Course, string email, string slots)
         {
             int x = 0;
             var q = "select * from StudentCourses Where email= '" + email + "' and coursecode ='" + Course + "'";
-            var b = "Insert into StudentCourses values('" + Course + "','" + email + "')";
+            string none = "none";
+            var b = "Insert into StudentCourses values('" + Course + "','" + email + "','" + slots + "','" + none + "')";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             SqlCommand cmd2 = new SqlCommand(b, new SqlConnection(connectionString));
             cmd.Connection.Open();
@@ -357,6 +358,7 @@ namespace MyWcfService1
                 Courses c = new Courses();
                 c.CourseCode = sdr["CourseCode"].ToString();
                 c.Title = sdr["Email"].ToString();
+                c.slots = sdr["slotsStudy"].ToString();
                 course.Add(c);
             }
             sdr.Close();
@@ -377,12 +379,14 @@ namespace MyWcfService1
                 Courses c = new Courses();
                 c.CourseCode = sdr["CourseCode"].ToString();
                 c.Title = sdr["Email"].ToString();
+                c.slots = sdr["slotsStudy"].ToString();
                 course.Add(c);
             }
             sdr.Close();
             cmd.Connection.Close();
 
-            string query = "select * from RequestTutor where Semail='" + email + "' and Status=2";
+            //string query = "select * from RequestTutor where Semail='" + email + "' and Status=2";
+            string query = "select Subject ,count(*) as totalreq from RequestTutor where Semail='" + email + "'  group by Subject";
             SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
             cmd1.Connection.Open();
             SqlDataReader sdr1 = cmd1.ExecuteReader();
@@ -391,10 +395,14 @@ namespace MyWcfService1
             {
                 foreach (var item in course.ToList())
                 {
-                    if (sdr1["subject"].ToString() == item.CourseCode)
+                    if (sdr1["subject"].ToString() == item.CourseCode && item.slots == sdr1["totalreq"].ToString() && sdr1["status"].ToString()=="2")
                     {
                         course.Remove(item);
                     }
+                    //else
+                    //{
+                    //    item.slots = (int.Parse(item.slots) - int.Parse(sdr1["totalreq"].ToString())).ToString();
+                    //}
                 }
 
             }
@@ -2864,7 +2872,7 @@ namespace MyWcfService1
             }
             sdrlim.Close();
             lcmd.Connection.Close();
-            if (limit <= 2)
+            if (limit < 1)
             {
                 string q = "select * from RequestTutor where Timming ='" + t.Timmings + "' and Day='" + t.Day + "' and Semail='" + t.SEmail + "'";
                 SqlCommand cmd1 = new SqlCommand(q, new SqlConnection(connectionString));
@@ -2943,7 +2951,7 @@ namespace MyWcfService1
             }
             else
             {
-                return new CUD { rowEffected = x, Reason = "Request limit Exceeds than 2 in single day" };
+                return new CUD { rowEffected = x, Reason = "Request limit Exceeds than 1" };
             }
 
 
@@ -3127,16 +3135,17 @@ namespace MyWcfService1
                 if (diffDays.TotalDays <= 0)
                 {
                     //sdrr.Close();
-                    cmdd.Connection.Close();
+                    var dat = sdrr["endDate"].ToString();
 
                     string qu = "update requesttutor set timming='" + sdrr["preTimming"] + "',day='" + sdrr["Preday"].ToString() + "' where day='" + sdrr["day"].ToString() + "' and timming='" + sdrr["timmings"].ToString() + "' and temail='" + Email + "' and subject='" + sdrr["subject"].ToString() + "'";
+                    cmdd.Connection.Close();
                     SqlCommand cmds = new SqlCommand(qu, new SqlConnection(connectionString));
                     cmds.Connection.Open();
                     int x = cmds.ExecuteNonQuery();
                     cmds.Connection.Close();
                     if (x == 1)
                     {
-                        string updateRes = "update reschedule set [Read]=1 where endDate='" + sdrr["endDate"].ToString() + "'";
+                        string updateRes = "update reschedule set [Read]=1 where endDate='" + dat + "'";
                         SqlCommand cmd12 = new SqlCommand(updateRes, new SqlConnection(connectionString));
                         cmd12.Connection.Open();
                         cmd12.ExecuteNonQuery();
@@ -4661,6 +4670,746 @@ namespace MyWcfService1
             sdr.Close();
             cmd.Connection.Close();
             return st;
+        }
+        public List<Courses> SlotStudy(string email)
+        {
+            List<Courses> course = new List<Courses>();
+            string q1 = "select * from StudentSchedual where Monday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd = new SqlCommand(q1, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                var d = 0;
+                foreach (var item in sdr.Read().ToString())
+                {
+                    d += 1;
+                }
+                Courses c = new Courses();
+                c.slotdays = "Monday";
+                c.Title = d.ToString();
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            string q2 = "select * from StudentSchedual where tuesday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd2 = new SqlCommand(q2, new SqlConnection(connectionString));
+            cmd2.Connection.Open();
+            SqlDataReader sdr2 = cmd2.ExecuteReader();
+            if (sdr2.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Tuesday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr2.Close();
+            cmd2.Connection.Close();
+            string q3 = "select * from StudentSchedual where wednesday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd3 = new SqlCommand(q3, new SqlConnection(connectionString));
+            cmd3.Connection.Open();
+            SqlDataReader sdr3 = cmd3.ExecuteReader();
+            if (sdr3.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Wednesday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr3.Close();
+            cmd3.Connection.Close();
+            string q4 = "select * from StudentSchedual where thursday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd4 = new SqlCommand(q4, new SqlConnection(connectionString));
+            cmd4.Connection.Open();
+            SqlDataReader sdr4 = cmd4.ExecuteReader();
+            if (sdr4.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Thursday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr4.Close();
+            cmd4.Connection.Close();
+            string q5 = "select * from StudentSchedual where friday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd5 = new SqlCommand(q5, new SqlConnection(connectionString));
+            cmd5.Connection.Open();
+            SqlDataReader sdr5 = cmd5.ExecuteReader();
+            if (sdr5.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Friday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr5.Close();
+            cmd5.Connection.Close();
+            string q6 = "select * from StudentSchedual where saturday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd6 = new SqlCommand(q6, new SqlConnection(connectionString));
+            cmd6.Connection.Open();
+            SqlDataReader sdr6 = cmd6.ExecuteReader();
+            if (sdr6.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Saturday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr6.Close();
+            cmd6.Connection.Close();
+            string q7 = "select * from StudentSchedual where sunday!=0 and Email='" + email + "' order by  countRows asc";
+            SqlCommand cmd7 = new SqlCommand(q7, new SqlConnection(connectionString));
+            cmd7.Connection.Open();
+            SqlDataReader sdr7 = cmd7.ExecuteReader();
+            if (sdr7.HasRows)
+            {
+                Courses c = new Courses();
+                c.slotdays = "Sunday";
+                c.onezero = "0";
+                course.Add(c);
+            }
+            sdr7.Close();
+            cmd7.Connection.Close();
+            return course;
+        }
+        public List<Days> FindTutorPerDays(string email, string sub, string dayses)
+        {
+            List<Days> day = new List<Days>();
+            List<Days> days = new List<Days>();
+            List<Days> odddays = new List<Days>();
+            foreach (var itemno in dayses.Trim().Split(','))
+            {
+                if (itemno != "")
+                {
+                    if (itemno == "Monday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Monday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Monday=tc.Monday  and tc.Monday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Monday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Tuesday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Tuesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Tuesday=tc.Tuesday  and tc.Tuesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Tuesday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Wednesday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Wednesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Wednesday=tc.Wednesday  and tc.Wednesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+                        // var query = "select distinct sc.Timming,tc.Email,sc.Wednesday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email  ) as [Full Name] from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email where sc.Email='" + email+ "' and sc.Wednesday=tc.Wednesday  and tc.Wednesday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub+"'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Wednesday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Thursday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Thursday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Thursday=tc.Thursday  and tc.Thursday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Thursday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Friday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Friday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Friday=tc.Friday  and tc.Friday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Friday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Saturday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Saturday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Saturday=tc.Saturday  and tc.Saturday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Saturday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor  where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                    break;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                    if (itemno == "Sunday")
+                    {
+                        var query = "select distinct sc.Timming,tc.Email,sc.Sunday,(select [Tutor].First_Name+' '+[Tutor].Last_Name  from Tutor where Tutor.Email=tc.Email ) as [Full Name],  (select [status] as stats from RequestTutor rt where rt.SEmail='" + email + "'  and rt.TEmail=tc.Email and rt.Timming=sc.Timming  and subject='" + sub + "') as tutorStatus from TutorSchedual tc join StudentSchedual sc  on sc.Timming=tc.Timming join StudentCourses cc on cc.Email=sc.Email join TutorCourses ttc on ttc.Email=tc.Email  where sc.Email='" + email + "' and sc.Sunday=tc.Sunday  and tc.Sunday=1 and cc.CourseCode=ttc.CourseCode and ttc.CourseCode='" + sub + "'";
+
+                        SqlCommand cmd = new SqlCommand(query, new SqlConnection(connectionString));
+                        cmd.Connection.Open();
+                        SqlDataReader sdr = cmd.ExecuteReader();
+                        while (sdr.Read())
+                        {
+                            string data = sdr["tutorStatus"].ToString();
+                            if (sdr["tutorStatus"].ToString() == "1" || sdr["tutorStatus"].ToString() == DBNull.Value.ToString())
+                            {
+                                Days d = new Days();
+                                d.day = "Sunday";
+                                d.tutorName = sdr["Full Name"].ToString();
+                                d.Timming = sdr["Timming"].ToString();
+                                d.Email = sdr["Email"].ToString();
+                                d.tutorStatus = sdr["tutorStatus"].ToString();
+                                d.rating = "0";
+                                days.Add(d);
+                            }
+                        }
+                        sdr.Close();
+                        System.Diagnostics.Debug.WriteLine(days);
+                        cmd.Connection.Close();
+                        var query1 = "select * from RequestTutor where semail='" + email + "'";
+                        SqlCommand cmd1 = new SqlCommand(query1, new SqlConnection(connectionString));
+                        cmd1.Connection.Open();
+                        SqlDataReader sdr1 = cmd1.ExecuteReader();
+                        while (sdr1.Read())
+                        {
+                            Days d = new Days();
+                            d.day = sdr1["Day"].ToString();
+                            d.Timming = sdr1["Timming"].ToString();
+                            d.Email = sdr1["TEmail"].ToString();
+                            d.tutorName = sdr1["SEmail"].ToString();
+                            odddays.Add(d);
+                        }
+                        sdr1.Close();
+                        cmd1.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in odddays.ToList())
+                            {
+                                if (item.day == item1.day && item.Timming == item1.Timming)
+                                {
+                                    //days.Remove(item);
+                                }
+                            }
+                        }
+                        string ratingQuery = "select COUNT(*)*5 as totalRating ,SUM(Rating)*5 as sumRating ,Temail from discardStu where Semail='" + email + "' and Subject='" + sub + "' group by Temail";
+                        SqlCommand cmdrating = new SqlCommand(ratingQuery, new SqlConnection(connectionString));
+                        cmdrating.Connection.Open();
+                        List<Days> ratingdays = new List<Days>();
+                        SqlDataReader sdrrating = cmdrating.ExecuteReader();
+                        while (sdrrating.Read())
+                        {
+                            Days d = new Days();
+                            d.Email = sdrrating["temail"].ToString();
+                            float SumRAting = float.Parse(sdrrating["sumRating"].ToString());
+                            float totalRating = float.Parse(sdrrating["totalRating"].ToString());
+                            d.rating = (SumRAting / totalRating).ToString();
+
+                            ratingdays.Add(d);
+                        }
+                        sdrrating.Close();
+                        cmdrating.Connection.Close();
+                        foreach (var item in days.ToList())
+                        {
+                            foreach (var item1 in ratingdays.ToList())
+                            {
+                                if (item.Email == item1.Email)
+                                {
+                                    item.rating = item1.rating;
+                                }
+                                else
+                                {
+                                    item.rating = "0";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            var disemail = days.Select(d => new { e = d.Email, d = d.day }).Distinct();
+            foreach (var item221 in disemail.ToList())
+            {
+                Days d = new Days();
+                d.Email = item221.e;
+                d.day = item221.d;
+                day.Add(d);
+            }
+
+            foreach (var mainloopemail in days.ToList())
+            {
+                foreach (var onlydays in dayses.Trim().Split(','))
+                {
+                    if (onlydays != "")
+                    {
+                        var isdataExist = days.Where(d => d.Email == mainloopemail.Email && d.day == onlydays.ToString()).ToList();
+                        if (isdataExist.Count != 0)
+                        {
+
+                        }
+                        else
+                        {
+                            days.Remove(mainloopemail);
+                        }
+                    }
+                }
+            }
+
+            string q = "select * from requesttutor where semail='" + email + "' and subject='" + sub + "'";
+            SqlCommand dm = new SqlCommand(q, new SqlConnection(connectionString));
+            dm.Connection.Open();
+            SqlDataReader sdrdm = dm.ExecuteReader();
+            while (sdrdm.Read())
+            {
+                var temail = sdrdm["temail"].ToString();
+                foreach (var item in days.ToList())
+                {
+                    if (item.Email != temail)
+                    {
+                        days.Remove(item);
+                    }
+                }
+            }
+            sdrdm.Close();
+            dm.Connection.Close();
+            return days.OrderBy(d => d.Email).ThenBy(d => d.day).ToList();
         }
     }
 }
