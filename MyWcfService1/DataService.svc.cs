@@ -395,7 +395,7 @@ namespace MyWcfService1
             {
                 foreach (var item in course.ToList())
                 {
-                    if (sdr1["subject"].ToString() == item.CourseCode && item.slots == sdr1["totalreq"].ToString() && sdr1["status"].ToString()=="2")
+                    if (sdr1["subject"].ToString() == item.CourseCode && item.slots == sdr1["totalreq"].ToString() && sdr1["status"].ToString() == "2")
                     {
                         course.Remove(item);
                     }
@@ -413,7 +413,7 @@ namespace MyWcfService1
         public List<Courses> TutorEnrollCourses(string email)
         {
             List<Courses> course = new List<Courses>();
-            string q = "select * from TutorCourses where Email='" + email + "'";
+            string q = "select coursecode ,email,(select fees from admin where tutoremail=tutorcourses.email  and Admin.CourseTitle=TutorCourses.CourseCode) as Fee,(select FeesStatus from admin where tutoremail=tutorcourses.email  and Admin.CourseTitle=TutorCourses.CourseCode) as statusfee from tutorcourses  where Email='" + email + "'";
             SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
             cmd.Connection.Open();
             SqlDataReader sdr = cmd.ExecuteReader();
@@ -422,6 +422,14 @@ namespace MyWcfService1
                 Courses c = new Courses();
                 c.CourseCode = sdr["CourseCode"].ToString();
                 c.Title = sdr["Email"].ToString();
+                if (sdr["statusfee"].ToString() == "Accepted")
+                {
+                    c.Fee = sdr["fee"].ToString();
+                }
+                else
+                {
+                    c.Fee = "Pending";
+                }
                 course.Add(c);
             }
             sdr.Close();
@@ -3745,7 +3753,7 @@ namespace MyWcfService1
             {
                 string name = fname + " " + lname;
                 List<FinanceData> fd = new List<FinanceData>();
-                SqlCommand cmd = new SqlCommand("select distinct Subject,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + temail + "' and Semail='" + semail + "'", new SqlConnection(connectionString));
+                SqlCommand cmd = new SqlCommand("select distinct Subject,(select COUNT(HeldStatus)   from HeldStuClass where Semail='" + semail + "' and Temail='" + temail + "' and HeldStatus='held' and Subject=RequestTutor.Subject ) as heldclass,(select COUNT(HeldStatus)   from HeldStuClass where Semail='" + semail + "' and Temail='" + temail + "' and HeldStatus='cancl' and Subject=RequestTutor.Subject ) as cancelClass,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + temail + "' and Semail='" + semail + "'", new SqlConnection(connectionString));
                 cmd.Connection.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
@@ -3756,11 +3764,15 @@ namespace MyWcfService1
                     if (name != sdr["name"].ToString())
                     {
                         s.Name = sdr["name"].ToString();
+                        s.Semail = sdr["heldclass"].ToString();
+                        s.TEmail = sdr["cancelClass"].ToString();
                         fd.Add(s);
                     }
                     else
                     {
                         s.Name = sdr["name1"].ToString();
+                        s.Semail = sdr["heldclass"].ToString();
+                        s.TEmail = sdr["cancelClass"].ToString();
                         fd.Add(s);
                     }
 
@@ -3773,7 +3785,7 @@ namespace MyWcfService1
             {
                 string name = fname + " " + lname;
                 List<FinanceData> fd = new List<FinanceData>();
-                SqlCommand cmd = new SqlCommand("select distinct Subject,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + semail + "' and Semail='" + temail + "'", new SqlConnection(connectionString));
+                SqlCommand cmd = new SqlCommand("select distinct Subject,(select COUNT(HeldStatus)   from HeldStuClass where Semail='" + temail + "' and Temail='" + semail + "' and HeldStatus='held' and Subject=RequestTutor.Subject ) as heldclass,(select COUNT(HeldStatus)   from HeldStuClass where Semail='" + temail + "' and Temail='" + semail + "' and HeldStatus='cancl' and Subject=RequestTutor.Subject ) as cancelClass,(select First_Name+' '+Last_Name from Student where Email=SEmail) as NAme,(select First_Name+' '+Last_Name from Tutor where Email=TEmail) as NAme1 from RequestTutor where TEmail='" + semail + "' and Semail='" + temail + "'", new SqlConnection(connectionString));
                 cmd.Connection.Open();
                 SqlDataReader sdr = cmd.ExecuteReader();
                 while (sdr.Read())
@@ -3784,11 +3796,15 @@ namespace MyWcfService1
                     if (name != sdr["name"].ToString())
                     {
                         s.Name = sdr["name"].ToString();
+                        s.Semail = sdr["heldclass"].ToString();
+                        s.TEmail = sdr["cancelClass"].ToString();
                         fd.Add(s);
                     }
                     else
                     {
                         s.Name = sdr["name1"].ToString();
+                        s.Semail = sdr["heldclass"].ToString();
+                        s.TEmail = sdr["cancelClass"].ToString();
                         fd.Add(s);
                     }
 
@@ -4519,7 +4535,7 @@ namespace MyWcfService1
                 Topics t = new Topics();
                 t.subject = sdr["cousetitle"].ToString();
                 t.maintopics = sdr["maintopics"].ToString();
-                t.id = int.Parse(sdr["courseid"].ToString());
+                t.id = int.Parse(sdr["persubjectid"].ToString());
 
                 var sss = sdr["subtopics"].ToString();
 
@@ -4560,6 +4576,7 @@ namespace MyWcfService1
                         if (s.maintopics == item.maintopics && sdr1["TopicStatus"].ToString() == "1" && x.semail == sdr1["LSubTopic"].ToString())
                         {
                             item.subtopics.Remove(x);
+
                             counter = item.id;
                             if (item.subtopics.Count == 0)
                             {
@@ -4619,7 +4636,7 @@ namespace MyWcfService1
             }
             else
             {
-                return tp.Where(d => d.id <= counter).ToList();
+                return tp.Where(d => d.id <= counter && d.subject == sub).ToList();
             }
         }
         public List<Student> Students()
@@ -5409,7 +5426,200 @@ namespace MyWcfService1
             }
             sdrdm.Close();
             dm.Connection.Close();
-            return days.OrderBy(d => d.Email).ThenBy(d => d.day).ToList();
+            return days.OrderBy(d => d.tutorName).ThenBy(d => d.day).ThenBy(d=>d.rating).ToList();
+        }
+        public List<AdminSide> AdminToFeesReq()
+        {
+            string q = "select CourseTitle,(select First_Name+' '+Last_Name from Tutor where Email=Admin.TutorEmail) as [Name],Fees ,TutorEmail from Admin where FeesStatus='none'";
+            List<AdminSide> aside = new List<AdminSide>();
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                AdminSide a = new AdminSide();
+                a.CouseTile = sdr["courseTitle"].ToString();
+                a.Email = sdr["tutorEmail"].ToString();
+                a.Name = sdr["name"].ToString();
+                a.Fees = sdr["fees"].ToString();
+                aside.Add(a);
+            }
+            cmd.Connection.Close();
+
+            return aside;
+        }
+
+
+        public List<AdminSide> AdminSideAcceptedFeesReq()
+        {
+            string q = "select CourseTitle,(select First_Name+' '+Last_Name from Tutor where Email=Admin.TutorEmail) as [Name],(select imgsrc from Tutor where Email=Admin.TutorEmail) as img,Fees ,TutorEmail from Admin";
+            List<AdminSide> aside = new List<AdminSide>();
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            while (sdr.Read())
+            {
+                AdminSide a = new AdminSide();
+                a.CouseTile = sdr["courseTitle"].ToString();
+                a.Email = sdr["tutorEmail"].ToString();
+                a.Name = sdr["name"].ToString();
+                a.Fees = sdr["fees"].ToString();
+                a.Imgsrc = sdr["img"].ToString();
+                aside.Add(a);
+            }
+            cmd.Connection.Close();
+
+            return aside.OrderBy(d => d.Name).ToList();
+        }
+        public CUD InsertAccpetedFee(string email, string Fee, string Sub, string status)
+        {
+            if (status == "Accept")
+            {
+                string q = "update admin set feesstatus='Accepted' where TutorEmail='" + email + "' and Fees='" + Fee + "' and CourseTitle='" + Sub + "'";
+                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+                return new CUD { Reason = "Fees Approved" };
+            }
+            else
+            {
+                string q = "update admin set feesstatus='Accepted',Fees='" + status + "' where TutorEmail='" + email + "' and Fees='" + Fee + "' and CourseTitle='" + Sub + "'";
+                SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+                cmd.Connection.Open();
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+                return new CUD { Reason = "Fees Approved" };
+            }
+
+        }
+        public List<Topics> InsertLesson(string sub, string mtpic, string stpic, string rmtpic)
+        {
+            List<Topics> topics = new List<Topics>();
+            var coursecode = string.Empty;
+            string q = "select * from course where title='" + sub + "'";
+            SqlCommand cmd = new SqlCommand(q, new SqlConnection(connectionString));
+            cmd.Connection.Open();
+            SqlDataReader sdr = cmd.ExecuteReader();
+            if (sdr.HasRows)
+            {
+                sdr.Read();
+                coursecode = sdr["CourseCode"].ToString();
+            }
+            sdr.Close();
+            cmd.Connection.Close();
+            var subtopicslist = string.Empty;
+            if (rmtpic != "none")
+            {
+                string query12 = "select * from CourseTopics where [courseCode]='" + coursecode + "' and [CouseTitle]='" + sub + "' and MainTopics='" + mtpic + "'";
+                SqlCommand scmd = new SqlCommand(query12, new SqlConnection(connectionString));
+                scmd.Connection.Open();
+                SqlDataReader sdr123 = scmd.ExecuteReader();
+                if (sdr123.HasRows)
+                {
+                    sdr123.Read();
+                    foreach (var item in sdr123["SubTopics"].ToString().Split(','))
+                    {
+                        if (item.ToLower() != rmtpic.ToLower())
+                        {
+                            subtopicslist = item + ",";
+                        }
+                    }
+
+                }
+                sdr123.Close();
+                scmd.Connection.Close();
+                subtopicslist = subtopicslist.Substring(0, subtopicslist.Length - 1);
+                string s = "update CourseTopics set SubTopics='" + subtopicslist + "' where [courseCode]='" + coursecode + "' and [CouseTitle]='" + sub + "' and MainTopics='" + mtpic + "'";
+                SqlCommand c = new SqlCommand(s, new SqlConnection(connectionString));
+                c.Connection.Open();
+                c.ExecuteNonQuery();
+                c.Connection.Close();
+                foreach (var item in subtopicslist.Split(','))
+                {
+                    Topics t1 = new Topics();
+                    t1.maintopics = item;
+                    topics.Add(t1);
+                }
+                return topics;
+            }
+            else
+            {
+                string query = "select * from CourseTopics where [courseCode]='" + coursecode + "' and [CouseTitle]='" + sub + "' and MainTopics='" + mtpic + "'";
+                SqlCommand cmd1 = new SqlCommand(query, new SqlConnection(connectionString));
+                cmd1.Connection.Open();
+                SqlDataReader sdr1 = cmd1.ExecuteReader();
+                if (sdr1.HasRows)
+                {
+                    sdr1.Read();
+                    Topics t = new Topics();
+                    t.stopics = sdr1["SubTopics"].ToString() + "," + stpic.ToString();
+                    sdr1.Close();
+                    cmd1.Connection.Close();
+                    string s = "update CourseTopics set SubTopics='" + t.stopics + "' where [courseCode]='" + coursecode + "' and [CouseTitle]='" + sub + "' and MainTopics='" + mtpic + "'";
+                    SqlCommand c = new SqlCommand(s, new SqlConnection(connectionString));
+                    c.Connection.Open();
+                    c.ExecuteNonQuery();
+                    c.Connection.Close();
+                    foreach (var item in t.stopics.Split(','))
+                    {
+                        Topics t1 = new Topics();
+                        t1.maintopics = item;
+                        topics.Add(t1);
+                    }
+                    return topics;
+
+                }
+                else
+                {
+                    sdr1.Close();
+                    cmd1.Connection.Close();
+                    string query1 = "select count(*) as counter from CourseTopics where [courseCode]='" + coursecode + "' and [CouseTitle]='" + sub + "'";
+                    SqlCommand c = new SqlCommand(query1, new SqlConnection(connectionString));
+                    c.Connection.Open();
+                    SqlDataReader sdr2 = c.ExecuteReader();
+                    if (sdr2.HasRows)
+                    {
+                        sdr2.Read();
+                        if (sdr2["counter"].ToString() != "0")
+                        {
+                           
+                            int counter = int.Parse(sdr2["counter"].ToString());
+                            counter++;
+                            sdr2.Close();
+                            c.Connection.Close();
+                            string qinsert = "insert into CourseTopics values('" + coursecode + "','" + sub + "','" + mtpic + "','" + stpic + "','" + counter.ToString() + "') ";
+                            SqlCommand c1 = new SqlCommand(qinsert, new SqlConnection(connectionString));
+                            c1.Connection.Open();
+                            c1.ExecuteNonQuery();
+                            c1.Connection.Close();
+                            Topics t1 = new Topics();
+                            t1.maintopics = stpic;
+                            topics.Add(t1);
+                            //return topics;
+                        }else
+                        {
+                            sdr2.Close();
+                            c.Connection.Close();
+                            int x = 1;
+                            string qinsert = "insert into CourseTopics values('" + coursecode + "','" + sub + "','" + mtpic + "','" + stpic + "','" + x.ToString() + "') ";
+                            SqlCommand c1 = new SqlCommand(qinsert, new SqlConnection(connectionString));
+                            c1.Connection.Open();
+                            c1.ExecuteNonQuery();
+                            c1.Connection.Close();
+                            Topics t1 = new Topics();
+                            t1.maintopics = stpic;
+                            topics.Add(t1);
+                            //return topics;
+                        }
+                        //return topics;
+                    }
+                    return topics;
+                }
+
+            }
+
+
         }
     }
 }

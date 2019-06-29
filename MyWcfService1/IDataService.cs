@@ -124,7 +124,7 @@ namespace MyWcfService1
            ResponseFormat = WebMessageFormat.Json,
            UriTemplate = "/AddStudentCourses/{Course}/{email}/{slots}"
            )]
-        CUD StudentCourses(string Course, string email,string slots);
+        CUD StudentCourses(string Course, string email, string slots);
 
         [OperationContract]
         [WebInvoke(
@@ -170,7 +170,7 @@ namespace MyWcfService1
            ResponseFormat = WebMessageFormat.Json,
            UriTemplate = "/FindTutorPerDays/{email}/{sub}/{days}"
            )]
-        List<Days> FindTutorPerDays(string email,string sub,string days);
+        List<Days> FindTutorPerDays(string email, string sub, string days);
 
 
 
@@ -494,7 +494,7 @@ namespace MyWcfService1
        ResponseFormat = WebMessageFormat.Json,
        UriTemplate = "/SubmitRating/{TEmail}/{SEmail}/{subject}"
        )]
-        CUD SubmitRating(string TEmail,string SEmail,string subject);
+        CUD SubmitRating(string TEmail, string SEmail, string subject);
 
         [OperationContract]
         [WebInvoke(
@@ -512,7 +512,7 @@ namespace MyWcfService1
        ResponseFormat = WebMessageFormat.Json,
        UriTemplate = "/Lessons/{email}/{sub}"
        )]
-        List<Topics> Lessons(string email,string sub);
+        List<Topics> Lessons(string email, string sub);
 
 
         [OperationContract]
@@ -542,6 +542,46 @@ namespace MyWcfService1
        UriTemplate = "/SlotStudy/{email}"
        )]
         List<Courses> SlotStudy(string email);
+
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/AdminToFeesReq"
+       )]
+        List<AdminSide> AdminToFeesReq();
+
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/AdminSideAcceptedFeesReq"
+       )]
+        List<AdminSide> AdminSideAcceptedFeesReq();
+
+        [OperationContract]
+        [WebInvoke(
+       Method = "GET",
+       RequestFormat = WebMessageFormat.Json,
+       ResponseFormat = WebMessageFormat.Json,
+       UriTemplate = "/InsertAccpetedFee/{email}/{Fee}/{Sub}/{status}"
+       )]
+        CUD InsertAccpetedFee(string email, string Fee, string Sub, string status);
+
+
+        [OperationContract]
+        [WebInvoke(
+     Method = "GET",
+     RequestFormat = WebMessageFormat.Json,
+     ResponseFormat = WebMessageFormat.Json,
+     UriTemplate = "/InsertLesson/{sub}/{mtpic}/{stpic}/{rmtpic}"
+     )]
+        List<Topics> InsertLesson(string sub, string mtpic, string stpic, string rmtpic);
+
 
 
     }

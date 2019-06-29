@@ -8,6 +8,7 @@ namespace MyWcfService1
     {
         public string semail { get; set; }
         public List<Topics> subtopics { get; set; }
+        public string stopics { get; set; }
 
         public string maintopics { get; set; }
         

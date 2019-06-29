@@ -7,6 +7,7 @@
         public string slots{get;set;}
         public string slotdays { get; set; }
         public string onezero { get; set; }
+        public string Fee { get; set; }
 
 
         public override string ToString()
