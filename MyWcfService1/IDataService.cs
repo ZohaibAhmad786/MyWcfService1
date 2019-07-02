@@ -575,12 +575,21 @@ namespace MyWcfService1
 
         [OperationContract]
         [WebInvoke(
-     Method = "GET",
-     RequestFormat = WebMessageFormat.Json,
-     ResponseFormat = WebMessageFormat.Json,
-     UriTemplate = "/InsertLesson/{sub}/{mtpic}/{stpic}/{rmtpic}"
-     )]
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/InsertLesson/{sub}/{mtpic}/{stpic}/{rmtpic}"
+        )]
         List<Topics> InsertLesson(string sub, string mtpic, string stpic, string rmtpic);
+
+        [OperationContract]
+        [WebInvoke(
+        Method = "GET",
+        RequestFormat = WebMessageFormat.Json,
+        ResponseFormat = WebMessageFormat.Json,
+        UriTemplate = "/Subjects"
+        )]
+        List<Courses> Subjects();
 
 
 
