@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminSide.cs" />
+    <Compile Include="CheckTutor.cs" />
     <Compile Include="Courses.cs" />
     <Compile Include="CUD.cs" />
     <Compile Include="DataService.svc.cs">
@@ -116,6 +117,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Requests.cs" />
     <Compile Include="Rescheduled.cs" />
     <Compile Include="Schedual.cs" />
     <Compile Include="Student.cs" />

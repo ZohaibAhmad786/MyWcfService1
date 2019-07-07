@@ -38,4 +38,6 @@ E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.pdb
 E:\MyWcfService1\MyWcfService1\bin\Newtonsoft.Json.xml
 E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.dll
 E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.pdb
-E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csprojResolveAssemblyReference.cache
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csprojAssemblyReference.cache
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csproj.CoreCompileInputs.cache
+E:\MyWcfService1\MyWcfService1\obj\Debug\MyWcfService1.csproj.CopyComplete

@@ -122,9 +122,9 @@ namespace MyWcfService1
            Method = "GET",
            RequestFormat = WebMessageFormat.Json,
            ResponseFormat = WebMessageFormat.Json,
-           UriTemplate = "/AddStudentCourses/{Course}/{email}/{slots}"
+           UriTemplate = "/AddStudentCourses/{Course}/{email}"
            )]
-        CUD StudentCourses(string Course, string email, string slots);
+        CUD StudentCourses(string Course, string email);
 
         [OperationContract]
         [WebInvoke(
